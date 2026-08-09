@@ -1,0 +1,16 @@
+{
+    "name": "Game.Framework.SaveSystem",
+    "rootNamespace": "Game.Framework.SaveSystem",
+    "references": [
+        "Game.Utils"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
