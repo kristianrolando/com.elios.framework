@@ -1,0 +1,19 @@
+{
+    "name": "Game.Framework.Profiling.Editor",
+    "rootNamespace": "Game.Framework.Profiling.Editor",
+    "references": [
+        "Game.Framework.Profiling",
+        "Game.Utils"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,18 @@
+{
+    "name": "Game.Framework.Profiling",
+    "rootNamespace": "Game.Framework.Profiling",
+    "references": [
+        "Game.Utils",
+        "Unity.InputSystem",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
