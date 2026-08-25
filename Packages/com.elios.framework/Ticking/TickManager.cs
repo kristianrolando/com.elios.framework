@@ -201,6 +201,11 @@ namespace Game.Framework.Ticking
         // an object that survived the load (DontDestroyOnLoad) keeps ticking untouched.
         private static void HandleActiveSceneChanged(Scene previous, Scene next)
         {
+            // The pauser (GameFlowManager) is scene-scoped and dies with the old scene, so nothing
+            // would otherwise un-pause this static gate: a run that ends paused would leave every
+            // future scene frozen. A fresh scene always starts unpaused.
+            IsPaused = false;
+
             UpdateChannel.PurgeDestroyed();
             UnscaledChannel.PurgeDestroyed();
             FixedChannel.PurgeDestroyed();
