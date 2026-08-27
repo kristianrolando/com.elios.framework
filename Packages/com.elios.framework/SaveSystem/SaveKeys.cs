@@ -13,5 +13,14 @@ namespace Game.Framework.SaveSystem
         // Player
         public const string PlayerFishInventory = "player/fish/inventory";
 
+        // Checkpoint: room terakhir yang sudah dicapai pemain. Bertahan di disk, tidak seperti
+        // snapshot HP yang sengaja hanya hidup selama aplikasi terbuka.
+        public const string CheckpointLevel = "checkpoint/level";
+        public const string CheckpointRoom = "checkpoint/room";
+        public const string CheckpointAttempt = "checkpoint/attempt";
+
+        // Balancing: ring buffer percobaan room terakhir. Data developer, bukan progress pemain.
+        public const string RoomStatsRecent = "stats/room/recent";
+
     }
 }
