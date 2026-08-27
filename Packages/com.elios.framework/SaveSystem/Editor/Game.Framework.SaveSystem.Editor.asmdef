@@ -1,0 +1,19 @@
+{
+    "name": "Game.Framework.SaveSystem.Editor",
+    "rootNamespace": "Game.Framework.SaveSystem.Editor",
+    "references": [
+        "Game.Framework.SaveSystem",
+        "Game.Utils"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
