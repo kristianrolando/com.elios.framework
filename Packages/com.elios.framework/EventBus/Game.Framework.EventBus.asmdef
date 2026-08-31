@@ -1,0 +1,14 @@
+{
+    "name": "Game.Framework.EventBus",
+    "rootNamespace": "Game.Framework.EventBus",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
