@@ -1,19 +1,19 @@
 # Ticking
 
-Satu update loop untuk seluruh game. Satu MonoBehaviour tersembunyi (`__TickDriver__`) yang men-tick semua object terdaftar, menggantikan ribuan `Update()` terpisah.
+A single update loop for the entire game. One hidden MonoBehaviour (`__TickDriver__`) ticks every registered object, replacing thousands of separate `Update()` calls.
 
-> TL;DR: implement `ITickable`, panggil `TickManager.RegisterTick(this)` di `OnEnable`, `TickManager.UnregisterTick(this)` di `OnDisable`/`OnDestroy`. Tidak ada setup scene.
+> TL;DR: implement `ITickable`, call `TickManager.RegisterTick(this)` in `OnEnable`, `TickManager.UnregisterTick(this)` in `OnDisable`/`OnDestroy`. No scene setup required.
 
 ---
 
-## Daftar Isi
+## Table of Contents
 - [Quick Start](#quick-start)
-- [Empat Channel](#empat-channel)
+- [Four Channels](#four-channels)
 - [Interval Throttling](#interval-throttling)
 - [Pause](#pause)
-- [Lifecycle Registrasi](#lifecycle-registrasi)
+- [Registration Lifecycle](#registration-lifecycle)
 - [Debug Stats](#debug-stats)
-- [⚠️ Batasan & Catatan Penting](#-batasan--catatan-penting)
+- [⚠️ Limitations & Important Notes](#-limitations--important-notes)
 - [API Reference](#api-reference)
 
 ---
@@ -31,25 +31,25 @@ public class ExampleController : MonoBehaviour, ITickable
 
     public void Tick(float deltaTime)
     {
-        // isi lama Update() ada di sini
+        // your old Update() body goes here
     }
 }
 ```
 
-Driver-nya dibuat otomatis saat registrasi pertama. Tidak perlu prefab, tidak perlu GameObject di scene.
+The driver is created automatically on first registration. No prefab needed, no GameObject required in the scene.
 
 ---
 
-## Empat Channel
+## Four Channels
 
-| Interface | Method | deltaTime | Pengganti |
+| Interface | Method | deltaTime | Replaces |
 |---|---|---|---|
 | `ITickable` | `Tick(float)` | `Time.deltaTime` | `Update()` |
-| `IUnscaledTickable` | `UnscaledTick(float)` | `Time.unscaledDeltaTime` | `Update()` yang harus jalan saat pause |
+| `IUnscaledTickable` | `UnscaledTick(float)` | `Time.unscaledDeltaTime` | `Update()` that must keep running while paused |
 | `IFixedTickable` | `FixedTick(float)` | `Time.fixedDeltaTime` | `FixedUpdate()` |
 | `ILateTickable` | `LateTick(float)` | `Time.deltaTime` | `LateUpdate()` |
 
-Channel-nya independen. Satu class boleh implement beberapa interface sekaligus, tapi registrasinya tetap terpisah:
+The channels are independent. A class may implement several interfaces at once, but each still needs its own registration:
 
 ```csharp
 public class PlayerController : MonoBehaviour, ITickable, IFixedTickable
@@ -66,21 +66,21 @@ public class PlayerController : MonoBehaviour, ITickable, IFixedTickable
         TickManager.UnregisterFixedTick(this);
     }
 
-    public void Tick(float deltaTime) { /* baca input, timer */ }
+    public void Tick(float deltaTime) { /* read input, timers */ }
 
     public void FixedTick(float fixedDeltaTime) { /* physics */ }
 }
 ```
 
-Aturan `Update` vs `FixedUpdate` di CLAUDE.md tetap berlaku: input & timer di `Tick`, semua yang menyentuh `Rigidbody2D` di `FixedTick`.
+The `Update` vs. `FixedUpdate` rule from CLAUDE.md still applies: input & timers in `Tick`, anything touching `Rigidbody2D` in `FixedTick`.
 
-Untuk pause, lihat [Pause](#pause).
+For pausing, see [Pause](#pause).
 
 ---
 
 ## Interval Throttling
 
-Logika yang tidak perlu jalan tiap frame (AI vision, scan target, cek jarak) bisa di-throttle:
+Logic that doesn't need to run every frame (AI vision, target scanning, distance checks) can be throttled:
 
 ```csharp
 private const float VisionInterval = 0.2f;
@@ -89,72 +89,72 @@ private void OnEnable() => TickManager.RegisterTick(this, VisionInterval);
 
 public void Tick(float deltaTime)
 {
-    // dipanggil 5x per detik.
-    // deltaTime = waktu nyata sejak tick terakhir (~0.2), bukan waktu satu frame,
-    // jadi akumulasi berbasis deltaTime tetap benar.
+    // called 5x per second.
+    // deltaTime = real elapsed time since the last tick (~0.2), not a single frame's time,
+    // so deltaTime-based accumulation stays correct.
 }
 ```
 
-Interval `0` (default) berarti tiap frame.
+An interval of `0` (default) means every frame.
 
-Penjadwalannya bebas drift: sisa waktu di atas interval dibawa ke siklus berikutnya (modulus), bukan dibuang. Jadi interval 0.2s tetap 5x per detik walaupun frame time-nya 60ms — bukan jadi 0.24s seperti kalau akumulatornya di-reset ke nol. Setelah hitch panjang (misal freeze 2 detik), backlog-nya diringkas jadi satu tick, bukan burst.
+Scheduling is drift-free: leftover time beyond the interval carries into the next cycle (modulus) instead of being discarded. So a 0.2s interval still fires 5x per second even at a 60ms frame time — it doesn't drift to 0.24s the way it would if the accumulator were reset to zero. After a long hitch (e.g. a 2-second freeze), the backlog collapses into a single tick instead of bursting.
 
 ---
 
 ## Pause
 
 ```csharp
-TickManager.IsPaused = true;   // buka menu pause
+TickManager.IsPaused = true;   // open the pause menu
 TickManager.IsPaused = false;  // resume
 ```
 
-| Channel | Saat `IsPaused` |
+| Channel | While `IsPaused` |
 |---|---|
-| `Tick` | berhenti total (tidak dipanggil sama sekali) |
-| `FixedTick` | berhenti total |
-| `LateTick` | berhenti total |
-| `UnscaledTick` | tetap jalan |
+| `Tick` | fully stopped (not called at all) |
+| `FixedTick` | fully stopped |
+| `LateTick` | fully stopped |
+| `UnscaledTick` | keeps running |
 
-Ini menghentikan iterasi channel-nya, bukan mengirim `deltaTime` 0 — jadi logika non-delta di dalam `Tick` (baca input, cek jarak) ikut berhenti, dan tidak ada biaya iterasi saat pause.
+This stops iteration of the channel entirely rather than sending `deltaTime` 0 — so non-delta logic inside `Tick` (reading input, distance checks) also stops, and there's no iteration cost while paused.
 
-**`IsPaused` terpisah dari `Time.timeScale`.** Yang dihentikan hanya loop milik kita; physics simulation, Animator, dan ParticleSystem Unity tetap jalan. Untuk freeze penuh, set keduanya:
+**`IsPaused` is separate from `Time.timeScale`.** Only our own loop is stopped; Unity's physics simulation, Animator, and ParticleSystem keep running. For a full freeze, set both:
 
 ```csharp
 TickManager.IsPaused = true;
 Time.timeScale = 0f;
 ```
 
-Kalau kamu cuma pakai `Time.timeScale = 0` tanpa `IsPaused`, `Tick()` tetap dipanggil tiap frame dengan `deltaTime` 0 (perilaku `Update()` biasa), dan `FixedTick` berhenti sendiri.
+If you only use `Time.timeScale = 0` without `IsPaused`, `Tick()` is still called every frame with `deltaTime` 0 (standard `Update()` behavior), while `FixedTick` stops on its own.
 
 ---
 
-## Lifecycle Registrasi
+## Registration Lifecycle
 
-- **`OnEnable` / `OnDisable`** — pilihan default. Object yang di-disable otomatis berhenti tick, persis seperti `Update()` bawaan Unity. Wajib untuk object hasil pooling.
-- **`Start` / `OnDestroy`** — kalau object harus terus tick walaupun component-nya di-disable.
+- **`OnEnable` / `OnDisable`** — the default choice. A disabled object automatically stops ticking, just like Unity's built-in `Update()`. Required for pooled objects.
+- **`Start` / `OnDestroy`** — when the object must keep ticking even while its component is disabled.
 
-`Register` dan `Unregister` aman dipanggil dari dalam `Tick()` — perubahannya diterapkan setelah channel selesai iterasi. Registrasi ganda diabaikan (dan memunculkan warning di editor).
+`Register` and `Unregister` are safe to call from inside `Tick()` — the change is applied after the channel finishes iterating. Duplicate registration is ignored (and logs a warning in the editor).
 
 ---
 
 ## Debug Stats
 
-Saat Play Mode, pilih GameObject `__TickDriver__` di Hierarchy. Inspector-nya menampilkan jumlah target per channel plus daftar nama tipe yang terdaftar, di-refresh tiap 0.5 detik. Editor-only, semuanya di-strip dari build.
+During Play Mode, select the `__TickDriver__` GameObject in the Hierarchy. Its Inspector shows the target count per channel plus a list of registered type names, refreshed every 0.5 seconds. Editor-only, fully stripped from builds.
 
-Nama tipe yang masih ada padahal object-nya sudah hilang = ada `Unregister` yang kelupaan.
+A type name that's still listed even though its object is gone means an `Unregister` call was missed somewhere.
 
 ---
 
-## ⚠️ Batasan & Catatan Penting
+## ⚠️ Limitations & Important Notes
 
-- **Tetap wajib `Unregister`.** Object yang di-destroy tanpa unregister terdeteksi otomatis lalu dibuang (dengan warning di editor), tapi baru pada tick berikutnya — jangan diandalkan.
-- **Target yang melempar exception langsung di-unregister** dan error-nya dilog satu kali. Ini disengaja: di loop bersama, satu exception yang tidak ditangkap akan mematikan semua object lain di channel itu.
-- **Urutan eksekusi = urutan registrasi.** Belum ada sistem priority. Kalau A wajib tick sebelum B, jangan andalkan urutan ini — panggil B dari A.
-- **Driver hidup di scene aktif.** Saat ganti scene, entry yang target-nya sudah destroy dibersihkan dan driver dibuat ulang. Object `DontDestroyOnLoad` tetap terdaftar dan terus tick.
-- **`Time.timeScale` 0 tidak memblokir `Tick()`.** Method-nya tetap dipanggil dengan `deltaTime` 0. Pakai `TickManager.IsPaused` kalau mau benar-benar berhenti — lihat [Pause](#pause).
-- **`IsPaused` adalah state global static.** Kalau lupa di-reset ke `false`, seluruh game berhenti tick. State-nya otomatis reset tiap masuk Play Mode.
-- **`try-catch` tetap aktif di release build**, bukan editor-only. Perilaku editor dan build harus sama; kalau exception handler-nya di-strip, satu exception di build akan mematikan seluruh channel — mode kegagalan terburuk, dan justru di jalur yang paling jarang dites.
-- **Bukan pengganti coroutine.** Untuk sequence berjangka waktu, coroutine tetap lebih tepat.
+- **`Unregister` is still mandatory.** A destroyed object without an unregister call is detected automatically and dropped (with a warning in the editor), but only on the next tick — don't rely on it.
+- **A target that throws an exception is unregistered immediately** and the error is logged once. This is intentional: in a shared loop, one uncaught exception would kill every other object on that channel.
+- **Execution order = registration order.** There is no priority system yet. If A must tick before B, don't rely on ordering — call B from A instead.
+- **The driver lives in the active scene.** On a scene change, entries whose targets have been destroyed are cleaned up and the driver is recreated. `DontDestroyOnLoad` objects stay registered and keep ticking.
+- **`Time.timeScale` 0 does not block `Tick()`.** The method is still called with `deltaTime` 0. Use `TickManager.IsPaused` if you want it to actually stop — see [Pause](#pause).
+- **`IsPaused` is global static state.** If it's forgotten and left `true`, the entire game stops ticking. It resets automatically on every entry to Play Mode.
+- **`try-catch` stays active in release builds**, not editor-only. Editor and build behavior must match; if the exception handler were stripped, a single exception in a build would kill the whole channel — the worst failure mode, and on the path least likely to be tested.
+- **Not a coroutine replacement.** For time-based sequences, a coroutine is still the right tool.
 
 ---
 
@@ -178,9 +178,9 @@ void RegisterLateTick(ILateTickable target, float interval = 0f);
 void UnregisterLateTick(ILateTickable target);
 
 // Pause
-bool IsPaused { get; set; }                   // stop scaled + fixed + late; unscaled tetap jalan
+bool IsPaused { get; set; }                   // stops scaled + fixed + late; unscaled keeps running
 
 // Query & reset
-bool IsRegistered(ITickable target);          // ada overload untuk tiap interface
-void Clear();                                 // buang semua registrasi di semua channel
+bool IsRegistered(ITickable target);          // an overload exists for each interface
+void Clear();                                 // remove all registrations on all channels
 ```

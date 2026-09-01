@@ -1,16 +1,16 @@
 # EventBus
 
-Event bus generik berbasis enum untuk komunikasi antar sistem yang decoupled (mis. Combat, Audio, UI, Save System) tanpa saling pegang referensi objek.
+Generic enum-based event bus for decoupled communication between systems (e.g. Combat, Audio, UI, Save System) without holding direct object references to each other.
 
-> TL;DR: definisikan enum kategori event, `Bus<TEnumMu>.Subscribe(id, callback)` di `Start` (publisher eksternal) atau `OnEnable` (publisher internal), `Bus<TEnumMu>.Trigger(id, ...)` dari mana saja, `Bus<TEnumMu>.Unsubscribe(id, callback)` di `OnDestroy`.
+> TL;DR: define an enum for the event category, `Bus<TEnum>.Subscribe(id, callback)` in `Start` (external publisher) or `OnEnable` (internal publisher), `Bus<TEnum>.Trigger(id, ...)` from anywhere, `Bus<TEnum>.Unsubscribe(id, callback)` in `OnDestroy`.
 
 ---
 
-## Daftar Isi
+## Table of Contents
 - [Quick Start](#quick-start)
-- [Kategori Parameter](#kategori-parameter)
-- [Reset Otomatis](#reset-otomatis)
-- [⚠️ Batasan & Catatan Penting](#-batasan--catatan-penting)
+- [Parameter Categories](#parameter-categories)
+- [Automatic Reset](#automatic-reset)
+- [⚠️ Limitations & Important Notes](#-limitations--important-notes)
 - [API Reference](#api-reference)
 
 ---
@@ -27,17 +27,17 @@ private void OnDestroy() => Bus<CombatEvent>.Unsubscribe<int>(CombatEvent.OnHit,
 
 private void HandleHit(int damage) { /* ... */ }
 
-// Trigger dari mana saja, publisher tidak perlu tahu siapa listener-nya
+// Trigger from anywhere, the publisher doesn't need to know who the listeners are
 Bus<CombatEvent>.Trigger(CombatEvent.OnHit, 50);
 ```
 
-Satu enum = satu kategori. `TEnum` menentukan dictionary mana yang dipakai, jadi `Bus<CombatEvent>` dan `Bus<GameState>` sepenuhnya independen satu sama lain.
+One enum = one category. `TEnum` determines which dictionary is used, so `Bus<CombatEvent>` and `Bus<GameState>` are completely independent of each other.
 
-Ikuti aturan subscription lifecycle di CLAUDE.md: publisher eksternal (Manager/singleton lain) di-subscribe di `Start`, publisher internal (component di GameObject yang sama) di `OnEnable` dengan `-=` sebelum `+=`. Unsubscribe selalu di `OnDestroy`.
+Follow the subscription lifecycle rules in CLAUDE.md: external publishers (another Manager/singleton) are subscribed in `Start`, internal publishers (a component on the same GameObject) in `OnEnable` with `-=` before `+=`. Always unsubscribe in `OnDestroy`.
 
 ---
 
-## Kategori Parameter
+## Parameter Categories
 
 | Arity | Subscribe | Trigger |
 |---|---|---|
@@ -47,38 +47,38 @@ Ikuti aturan subscription lifecycle di CLAUDE.md: publisher eksternal (Manager/s
 | 3 | `Subscribe<T1,T2,T3>(id, Action<T1,T2,T3> callback)` | `Trigger(id, arg1, arg2, arg3)` |
 | 4 | `Subscribe<T1,T2,T3,T4>(id, Action<T1,T2,T3,T4> callback)` | `Trigger(id, arg1, arg2, arg3, arg4)` |
 
-Tipe parameter di `Subscribe` dan `Trigger` harus identik, termasuk urutannya. Kalau beda (mis. subscribe `<int>` tapi trigger `<float>`), keduanya dianggap event yang sama sekali berbeda dan tidak akan saling memicu — tanpa error compile-time maupun runtime, jadi typo tipe gagal secara diam-diam.
+The parameter types on `Subscribe` and `Trigger` must be identical, including their order. If they differ (e.g. subscribing with `<int>` but triggering with `<float>`), they are treated as entirely different events and will never fire each other — with no compile-time or runtime error, so a type typo fails silently.
 
 ---
 
-## Reset Otomatis
+## Automatic Reset
 
-Semua dictionary di sini `static`. Dengan opsi Editor "Enter Play Mode without Domain Reload" aktif, static field tidak ter-reset antar sesi Play — subscriber dari sesi sebelumnya bisa nyangkut dan mereferensikan objek yang sudah destroy.
+All dictionaries here are `static`. With the "Enter Play Mode without Domain Reload" Editor option enabled, static fields are not reset between Play sessions — subscribers from a previous session can linger and reference objects that have already been destroyed.
 
-Sama seperti `TickManager`, `Bus<TEnum>` reset otomatis tiap masuk Play Mode lewat `[RuntimeInitializeOnLoadMethod]` — tidak perlu dipanggil manual, dan berlaku untuk semua `TEnum` serta semua arity yang pernah dipakai.
+Just like `TickManager`, `Bus<TEnum>` resets automatically on every entry to Play Mode via `[RuntimeInitializeOnLoadMethod]` — no manual call needed, and this applies to every `TEnum` and every arity that has ever been used.
 
-`ClearAll()` tetap tersedia untuk hard reset manual (mis. transisi scene besar di tengah sesi), tapi untuk kasus normal listener cukup `Unsubscribe` sendiri di `OnDestroy`.
+`ClearAll()` is still available for a manual hard reset (e.g. a major scene transition mid-session), but for normal cases it's enough for each listener to `Unsubscribe` itself in `OnDestroy`.
 
 ---
 
-## ⚠️ Batasan & Catatan Penting
+## ⚠️ Limitations & Important Notes
 
-- **Wajib `Unsubscribe`.** Tidak ada deteksi otomatis seperti `TickManager` — listener yang lupa unsubscribe tetap dipanggil walau objeknya sudah destroy, dan itu akan mengakses fake-null object.
-- **Satu subscriber yang throw menghentikan subscriber lain di event yang sama.** `Trigger` memanggil multicast delegate secara berurutan; exception di satu handler menghentikan sisa rantai. Ini perilaku standar C# event, bukan spesifik ke bus ini — jangan taruh logika yang bisa gagal di handler tanpa try-catch kalau event itu juga didengar sistem lain yang kritikal.
-- **Tidak ada jaminan urutan pemanggilan** selain urutan `Subscribe`. Jangan andalkan urutan antar subscriber untuk logika yang penting.
-- **Kombinasi tipe parameter yang beda = event yang beda**, walau `eventId`-nya sama. Lihat [Kategori Parameter](#kategori-parameter).
+- **`Unsubscribe` is mandatory.** There is no automatic detection like `TickManager` — a listener that forgets to unsubscribe is still invoked even after its object has been destroyed, and that will access a fake-null object.
+- **One throwing subscriber stops the other subscribers on the same event.** `Trigger` calls the multicast delegate sequentially; an exception in one handler stops the rest of the chain. This is standard C# event behavior, not specific to this bus — don't put logic that can fail into a handler without a try-catch if that event is also listened to by other critical systems.
+- **No guaranteed call order** other than `Subscribe` order. Don't rely on the order between subscribers for logic that matters.
+- **Different parameter type combinations = different events**, even with the same `eventId`. See [Parameter Categories](#parameter-categories).
 
 ---
 
 ## API Reference
 
 ```csharp
-// Per arity (0-4 parameter), pola sama untuk semuanya:
+// Per arity (0-4 parameters), same pattern for all:
 void Subscribe(TEnum id, Action callback);
 void Unsubscribe(TEnum id, Action callback);
 void Trigger(TEnum id);
-// ...serupa untuk Subscribe<T>, Subscribe<T1,T2>, Subscribe<T1,T2,T3>, Subscribe<T1,T2,T3,T4>
+// ...similarly for Subscribe<T>, Subscribe<T1,T2>, Subscribe<T1,T2,T3>, Subscribe<T1,T2,T3,T4>
 
 // Reset
-void ClearAll(); // buang semua subscriber untuk TEnum ini, semua arity
+void ClearAll(); // remove all subscribers for this TEnum, all arities
 ```
