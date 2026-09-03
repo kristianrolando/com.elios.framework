@@ -15,6 +15,7 @@ A **PlayerPrefs-style** storage API, but backed by **JSON files per slot**, type
 - [Supported Types](#supported-types)
 - [Slots (Multi-Save)](#slots-multi-save)
 - [When Data Is Written to Disk](#when-data-is-written-to-disk)
+- [Editor: Save File Browser](#editor-save-file-browser)
 - [Architecture & Flow](#architecture--flow)
 - [⚠️ Limitations & Important Notes](#-limitations--important-notes)
 - [API Reference](#api-reference-save)
@@ -287,6 +288,24 @@ Save.ConfigureEncryption("your-password");
 
 ---
 
+## Editor: Save File Browser
+
+**Tools ▸ Save System ▸ Save File Browser** — a read-only view of what actually landed on disk:
+the folder tree under `persistentDataPath`, each slot file with its size and timestamp, and a
+preview of its JSON, plus deletion of a file or a whole folder.
+
+It reads the file system **directly** and never calls `Save`, `SaveService` or `FileSaveStorage`
+(it borrows only folder and extension names from `SaveConstants`). That is deliberate: opening the
+window while debugging must not initialize the save system or mutate runtime state. It also
+recognises what the storage layer leaves behind — interrupted-write temp files and the `"GSAVEC1\0"`
+encrypted-payload header — so an encrypted or half-written slot reads as that rather than as
+corrupt JSON.
+
+The window lives in `Editor/` behind `Game.Framework.SaveSystem.Editor.asmdef` (Editor platform
+only), so nothing in a build can reach it.
+
+---
+
 ## Logging
 
 Verbose logs are **off by default** and, when enabled, are editor-only (stripped from builds via `EditorDebug`). Critical persistence failures always log at runtime.
@@ -299,18 +318,33 @@ Save.EnableLogging = true; // opt-in verbose save/load logs while debugging
 
 ## WebGL
 
-Saves work on WebGL builds. There `Application.persistentDataPath` is backed by the browser's
-**IndexedDB** (IDBFS): file writes land in memory first and only become durable after `FS.syncfs`.
-The storage layer handles this automatically — after **every** write/delete it calls a small JS
-bridge ([SaveFileSync.jslib](../../../../Plugins/WebGL/SaveFileSync.jslib) via
-[SaveFileSystem.cs](SaveFileSystem.cs)) to persist to IndexedDB. On other platforms it's a no-op.
+On WebGL, `Application.persistentDataPath` is backed by the browser's **IndexedDB** (IDBFS): file
+writes land in memory first and only become durable after `FS.syncfs`. The storage layer handles
+that — after **every** write/delete it calls `SaveFileSystem.PersistToDisk()`, which on WebGL calls
+through to the JS bridge. On every other platform it is a no-op.
+
+Two halves, both present:
+
+| Half | File | Note |
+|---|---|---|
+| C# | [SaveFileSystem.cs](SaveFileSystem.cs) | `[DllImport("__Internal")] SaveFileSync_Flush()` under `UNITY_WEBGL && !UNITY_EDITOR` |
+| JS | [SaveFileSync.jslib](../../../Plugins/WebGL/SaveFileSync.jslib) | `mergeInto(LibraryManager.library, …)`, calls `FS.syncfs(false, …)` |
+
+> The `.jslib` **must stay imported as a `PluginImporter` with WebGL enabled** — that is how the
+> WebGL build pipeline collects it, not by scanning for the extension. Its `.meta` carries that
+> block explicitly; if it is ever reduced to a bare `fileFormatVersion` + `guid`, the symbol
+> silently drops out of the build and linking fails with `undefined symbol: _SaveFileSync_Flush`.
+
+> **Not verified against a real WebGL build.** The files and the import settings are in place, but
+> no WebGL build has been produced from this project, so treat the whole WebGL path as untested.
 
 - Persistence happens on each flush; combined with the flush on focus-loss ([SaveLifecycleHandler.cs](SaveLifecycleHandler.cs)), data survives tab switches and reloads.
 - `File.Replace` isn't supported on Emscripten, so WebGL uses a manual backup-swap instead (same `.bak` safety).
 - **Encryption** (AES/HMAC/PBKDF2) uses managed crypto and should work on WebGL — verify it in an actual build.
 - Edge case: an instant hard-close right after a write (without losing focus first) can miss the sync. Use `autoFlush: true` for critical saves so `Save` writes and syncs immediately.
 
-> Note: after adding these files, do **Assets ▸ Refresh** so Unity imports the `.jslib` and scripts.
+**To finish it:** add a `.jslib` under `Assets/Plugins/WebGL/` exporting `SaveFileSync_Flush`
+(calling `FS.syncfs(false, …)`), then do **Assets ▸ Refresh** so Unity imports it.
 
 ---
 

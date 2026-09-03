@@ -1,23 +1,31 @@
 # Framework — Engine Layer
 
-Entry point for `Assets/_Main/Framework`. Four self-contained subsystems that gameplay stands
+Entry point for `Assets/_Main/Framework`. Five self-contained subsystems that gameplay stands
 on. Each has its own asmdef and its own README with the full API; **this file is the map: what
 each one is for, how they boot, and the rules that cut across all of them.**
 
 | Subsystem | Namespace | Replaces | Users in `Scripts/` | Deep doc |
 |---|---|---|---|---|
-| **Ticking** | `Game.Framework.Ticking` | `Update` / `FixedUpdate` / `LateUpdate` | 16 files | [README](Ticking/README.md) |
-| **ObjectPooling** | `Game.Framework.ObjectPooling` | `Instantiate` / `Destroy` | 12 files | [README](ObjectPooling/README.md) |
-| **SaveSystem** | `Game.Framework.SaveSystem` | `PlayerPrefs` | 5 files | [README](SaveSystem/README.md) |
+| **Ticking** | `Game.Framework.Ticking` | `Update` / `FixedUpdate` / `LateUpdate` | 17 files | [README](Ticking/README.md) |
+| **ObjectPooling** | `Game.Framework.ObjectPooling` | `Instantiate` / `Destroy` | 13 files | [README](ObjectPooling/README.md) |
+| **SaveSystem** | `Game.Framework.SaveSystem` | `PlayerPrefs` | 6 files | [README](SaveSystem/README.md) |
 | **Profiling** | `Game.Framework.Profiling` | Unity Profiler window (in-build) | 0 — scene-only HUD | [README](Profiling/README.md) |
+| **EventBus** | `Game.Framework.EventBus` | direct references between systems | **0 — built, not adopted** | [README](EventBus/README.md) |
+
+Only the first three are load-bearing. Profiling is diagnostics, and EventBus is available but
+has no callers: normal in-scene communication still goes through a plain C# `event` on a Manager
+(see `/CLAUDE.md`). Reach for the bus only when two systems genuinely must not see each other.
 
 ---
 
 ## 1. Dependency rule
 
-Every asmdef references **only `Game.Utils`** (Profiling also takes `Unity.InputSystem` and
-`UnityEngine.UI`). Nothing here references gameplay, and nothing here knows what a room, an
-enemy, or a player is.
+Every asmdef references **at most `Game.Utils`** — Profiling also takes `Unity.InputSystem` and
+`UnityEngine.UI`, and EventBus references nothing at all. Nothing here references gameplay, and
+nothing here knows what a room, an enemy, or a player is.
+
+`Game.Utils` itself pulls in `Lofelt.NiceVibrations`, `MoreMountains.Tools` and `UnityEngine.UI`
+(haptics and the screen fader), so those ride along into every framework assembly.
 
 ```
 Game.Scripts (default assembly)  ──►  Game.Framework.*  ──►  Game.Utils
@@ -30,11 +38,12 @@ gameplay-specific part up into `Scripts/` instead.
 
 ---
 
-## 2. Boot order (all four, one frame)
+## 2. Boot order (one frame)
 
 ```
 SubsystemRegistration   TickManager.ResetStatics()          ← statics wiped
                         ObjectPoolManager.ResetStatics()    ← statics wiped
+                        Bus<TEnum> reset                    ← statics wiped, every enum + arity
 BeforeSceneLoad         SaveBootstrap.Bootstrap()
                             Save.InitializeIfNeeded()       ← loads last-used slot from disk
                             SaveLifecycleHandler.EnsureExists()
@@ -53,6 +62,7 @@ static state (gameplay's `RunSession` already does).
 | Subsystem | What happens |
 |---|---|
 | Ticking | `IsPaused = false`, destroyed targets purged from all four channels, `TickDriver` rebuilt |
+| EventBus | Nothing — subscribers persist. Each listener must `Unsubscribe` in its own `OnDestroy` |
 | ObjectPooling | **All pools cleared**, `_poolRoot` dropped (it died with the old scene) |
 | SaveSystem | Flush if dirty (`sceneLoaded`) |
 
@@ -169,7 +179,37 @@ versions — `ResolvedCounters` / `MissingCounters` say which ones landed.
 
 ---
 
-## 7. Rules when editing anything here
+## 7. EventBus
+
+`Bus<TEnum>` is a static, enum-keyed pub/sub: one enum type = one independent channel, with
+`Subscribe` / `Trigger` / `Unsubscribe` overloads for 0–4 arguments.
+
+```csharp
+public enum CombatEvent { OnHit, OnEnemyDied }
+
+Bus<CombatEvent>.Subscribe<int>(CombatEvent.OnHit, HandleHit);   // Start / OnEnable
+Bus<CombatEvent>.Trigger(CombatEvent.OnHit, 50);                 // anywhere
+Bus<CombatEvent>.Unsubscribe<int>(CombatEvent.OnHit, HandleHit); // OnDestroy
+```
+
+**Status: available, unused.** No file in `Scripts/` calls it. The project's default remains a
+plain C# `event` on the publishing Manager, which is type-checked and traceable in the IDE.
+
+Three traps worth knowing before adopting it:
+
+- **The parameter types are part of the key.** Subscribing with `<int>` and triggering with
+  `<float>` are two different events that never reach each other, with no compile-time or
+  runtime error.
+- **`Unsubscribe` is mandatory.** Unlike `TickManager`, nothing detects a destroyed listener; a
+  forgotten `-=` keeps invoking a fake-null object.
+- **One throwing subscriber stops the rest of the chain** for that event — standard multicast
+  delegate behaviour, but it matters more when the publisher cannot see who is listening.
+
+Statics reset automatically on entry to Play Mode; `ClearAll()` is there for a manual hard reset.
+
+---
+
+## 8. Rules when editing anything here
 
 - New static state → reset it in a `[RuntimeInitializeOnLoadMethod(SubsystemRegistration)]`.
 - Never reference gameplay assemblies; keep these subsystems object-agnostic.
