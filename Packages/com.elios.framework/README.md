@@ -7,7 +7,7 @@ each one is for, how they boot, and the rules that cut across all of them.**
 | Subsystem | Namespace | Replaces | Users in `Scripts/` | Deep doc |
 |---|---|---|---|---|
 | **Ticking** | `Game.Framework.Ticking` | `Update` / `FixedUpdate` / `LateUpdate` | 17 files | [README](Ticking/README.md) |
-| **ObjectPooling** | `Game.Framework.ObjectPooling` | `Instantiate` / `Destroy` | 13 files | [README](ObjectPooling/README.md) |
+| **ObjectPooling** | `Game.Framework.ObjectPooling` | `Instantiate` / `Destroy` | 14 files | [README](ObjectPooling/README.md) |
 | **SaveSystem** | `Game.Framework.SaveSystem` | `PlayerPrefs` | 6 files | [README](SaveSystem/README.md) |
 | **Profiling** | `Game.Framework.Profiling` | Unity Profiler window (in-build) | 0 — scene-only HUD | [README](Profiling/README.md) |
 | **EventBus** | `Game.Framework.EventBus` | direct references between systems | **0 — built, not adopted** | [README](EventBus/README.md) |
@@ -106,17 +106,23 @@ Get(prefab, pos, rot, parent) → pool exists? → dequeue : Instantiate
 Return(instance)              → no PoolableKey?      → Destroy
                               → key from another pool → Destroy
                               → already in pool       → ignored
-                              → reserve full (max 200)→ Destroy the surplus
+                              → reserve full (DefaultMaxSize) → Destroy the surplus
                               → else OnReturnToPool() → SetActive(false) → enqueue
 ```
 
 - `IPoolable.OnSpawn` / `OnReturnToPool` are the reset hooks, on **root or any child**.
   A pooled object must reset every field it mutates — a stale timer or a disabled renderer
   survives recycling.
-- `RegisterPrefab(prefab, initialSize, maxSize)` prewarms; optional.
+- `RegisterPrefab(prefab, initialSize, maxSize)` prewarms; optional. A `maxSize` of 0 or less
+  means `ObjectPoolManager.DefaultMaxSize` (200 unless a project sets it at startup; reset on
+  every Play start like the rest of the statics here).
 - `ActiveCount = TotalRented - TotalReturned`; `LogStats()` (editor-only) dumps per-pool
   counters — a climbing `ActiveCount` is a leak.
 - Returning a scene object or a non-pooled instance is safe: it is just destroyed.
+- `ClassPool<T>` is the same reserve for plain C# objects — a factory instead of a prefab, the
+  same counters, the same `IPoolable` contract. It has no marker component, so it cannot detect a
+  foreign instance on `Return`. For pooled **collections** use Unity's `UnityEngine.Pool`
+  (`ListPool<T>`, `HashSetPool<T>`, `DictionaryPool<K, V>`) rather than wrapping one here.
 
 **The trap this project already hit:** an object whose `OnDisable` stops the coroutine that would
 have called `Return` never comes back. Keep the return path independent of enable state, or drain

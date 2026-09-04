@@ -31,6 +31,22 @@ namespace Game.Framework.SaveSystem
         public static event Action<string> OnLoaded;
         public static event Action<string, string> OnSlotChanged;
 
+        // Runs on every Play start, even with "Enter Play Mode without Domain Reload" on, so a
+        // service, encryptor or subscriber left over from the previous session never leaks in.
+        // Without this _initialized stays true, InitializeIfNeeded returns early, and the facade
+        // keeps serving the previous session's SaveService.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            _service = null;
+            _encryptor = null;
+            _initialized = false;
+
+            OnSaved = null;
+            OnLoaded = null;
+            OnSlotChanged = null;
+        }
+
         public static void InitializeIfNeeded()
         {
             if (IsInitialized) return;

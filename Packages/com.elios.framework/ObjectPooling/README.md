@@ -2,6 +2,8 @@
 
 A lightweight, **zero-setup** object pool. Reuse GameObjects instead of `Instantiate`/`Destroy` to avoid GC spikes and hitches — one pool is created automatically per prefab on first use.
 
+`ClassPool<T>` does the same for plain C# objects, with the same `IPoolable` reset contract.
+
 > TL;DR: `ObjectPoolManager.Get(prefab, position)` to spawn, `ObjectPoolManager.Return(instance)` to recycle. That's it.
 
 ---
@@ -12,6 +14,8 @@ A lightweight, **zero-setup** object pool. Reuse GameObjects instead of `Instant
 - [Usage by Scenario](#usage-by-scenario)
 - [Resetting State (IPoolable)](#resetting-state-ipoolable)
 - [Prewarming](#prewarming)
+- [Default Reserve Cap](#default-reserve-cap)
+- [Pooling Plain C# Objects](#pooling-plain-c-objects)
 - [Managing & Clearing Pools](#managing--clearing-pools)
 - [Architecture & Flow](#architecture--flow)
 - [⚠️ Limitations & Important Notes](#-limitations--important-notes)
@@ -134,7 +138,70 @@ ObjectPoolManager.RegisterPrefab(bulletPrefab, initialSize: 20, maxSize: 50);
 
 - `initialSize` is clamped to `maxSize` (extras would only be created then destroyed).
 - Prewarming does **not** fire `IPoolable` callbacks — instances are simply created inactive.
-- `RegisterPrefab` is optional; `Get` registers with defaults (`initialSize: 0, maxSize: 200`) if you skip it.
+- `RegisterPrefab` is optional; `Get` registers with defaults (`initialSize: 0`, `maxSize: DefaultMaxSize`) if you skip it.
+- A `maxSize` of `0` or less means "use `DefaultMaxSize`".
+
+---
+
+## Default Reserve Cap
+
+Every pool created without an explicit `maxSize` uses `ObjectPoolManager.DefaultMaxSize` (200 out of the box). Set it once at startup when a project's whole scale differs — a bullet-hell needs a deeper reserve than a puzzle game:
+
+```csharp
+// Before the first Get, e.g. from a bootstrap MonoBehaviour's Awake.
+ObjectPoolManager.DefaultMaxSize = 500;
+```
+
+- Applies to prefab pools **and** to `ClassPool<T>`, so one knob covers the subsystem.
+- Values below 1 are clamped to 1.
+- Only affects pools created **after** the change; existing pools keep the cap they were built with.
+- Reset to 200 on every Play start, so set it from code rather than expecting it to persist.
+
+---
+
+## Pooling Plain C# Objects
+
+`ClassPool<T>` is the same reserve for objects that are not GameObjects: runtime state objects, command/request objects, working buffers. It takes a factory instead of a prefab.
+
+```csharp
+using Game.Framework.ObjectPooling;
+
+private readonly ClassPool<DamageRequest> _requests =
+    new ClassPool<DamageRequest>(() => new DamageRequest(), initialSize: 8);
+
+DamageRequest request = _requests.Get();
+// ... use it ...
+_requests.Return(request);
+```
+
+`IPoolable` works exactly as it does for prefabs — implement it on `T` and `OnSpawn` / `OnReturnToPool` fire on every rent and return:
+
+```csharp
+public sealed class DamageRequest : IPoolable
+{
+    public float Amount;
+    public Vector2 Point;
+
+    public void OnSpawn() { }
+
+    public void OnReturnToPool()
+    {
+        Amount = 0f;
+        Point = Vector2.zero;
+    }
+}
+```
+
+Differences from the prefab pool, all of them consequences of there being no marker component:
+
+| | `ObjectPool` (prefab) | `ClassPool<T>` |
+|---|---|---|
+| Identity | `PoolableKey` component | none — the pool tracks its own reserve |
+| Wrong-pool return | destroyed | accepted; the pool cannot tell |
+| Surplus over `maxSize` | `Object.Destroy` | dropped, collected by the GC |
+| Double return | ignored | ignored |
+
+> **Not for collections.** Unity already ships `UnityEngine.Pool` with `ListPool<T>`, `HashSetPool<T>`, `DictionaryPool<K, V>` and `CollectionPool<TCollection, TItem>`. Use those for a pooled `List<T>`; `ClassPool<T>` is for your own types.
 
 ---
 
@@ -162,6 +229,13 @@ ObjectPool (one per prefab)                ObjectPool.cs
      │  Queue<GameObject> reserve, maxSize cap, stats, IPoolable notifications
      ▼
 PoolableKey (auto marker) + IPoolable      PoolableKey.cs / IPoolable.cs
+
+
+Your code
+     │  new ClassPool<T>(factory) → Get / Return
+     ▼
+ClassPool<T> (plain C# objects)            ClassPool.cs
+        Queue<T> reserve + reference-identity set, same counters, same IPoolable
 ```
 
 **Get flow:** dequeue a valid instance (skip destroyed ones) or instantiate → ensure marker → set parent/position → activate → `OnSpawn()`.
@@ -184,6 +258,8 @@ PoolableKey (auto marker) + IPoolable      PoolableKey.cs / IPoolable.cs
 | 8 | **Wrong / non-pooled objects are destroyed on Return** | Returning an object to the wrong pool, or one without a `PoolableKey`, destroys it by design. |
 | 9 | **Key = `prefab.GetInstanceID()`** | Stable within a play session only. Do not persist pool keys. |
 | 10 | **Editor-only warnings** | Setup warnings use `EditorDebug` and are stripped from builds. |
+| 11 | **`ClassPool<T>` cannot verify ownership** | With no marker component it accepts any instance of `T` on `Return`. Returning something the pool never handed out puts a foreign object into the reserve. |
+| 12 | **`ClassPool<T>` membership is by reference** | Two instances that compare `Equals` are still two objects, and both can sit in the reserve. Intentional — the alternative silently drops one. |
 
 ---
 
@@ -198,11 +274,13 @@ void       Return(GameObject instance)
 
 **Pool management**
 ```csharp
-void RegisterPrefab(GameObject prefab, int initialSize = 0, int maxSize = 200)
+void RegisterPrefab(GameObject prefab, int initialSize = 0, int maxSize = 0) // 0 → DefaultMaxSize
 bool HasPool(GameObject prefab)
 void ClearPoolForPrefab(GameObject prefab)
 void ClearAll()
 void LogStats()   // editor-only
+
+static int DefaultMaxSize { get; set; }   // reserve cap for pools created without one; min 1
 ```
 
 **Lifecycle hook** — `IPoolable` (implement on the prefab)
@@ -211,7 +289,16 @@ void OnSpawn()
 void OnReturnToPool()
 ```
 
-**Per-pool diagnostics** — `ObjectPool`
+**Plain C# objects** — `ClassPool<T> where T : class`
+```csharp
+ClassPool(Func<T> factory, int initialSize = 0, int maxSize = 0) // 0 → DefaultMaxSize
+T    Get()
+void Return(T instance)
+void Clear()      // empties the reserve, keeps the counters
+int  MaxSize
+```
+
+**Per-pool diagnostics** — `ObjectPool` and `ClassPool<T>`
 ```csharp
 int Count          // instances currently in the reserve
 int TotalRented    // cumulative Get count

@@ -12,11 +12,14 @@ namespace Game.Framework.ObjectPooling
     public static class ObjectPoolManager
     {
         private const string PoolRootName = "__ObjectPoolRoot__";
-        private const int DefaultMaxSize = 200;
+
+        // Reserve cap a pool starts out with before a project overrides DefaultMaxSize.
+        private const int BuiltInDefaultMaxSize = 200;
 
         private static readonly Dictionary<int, ObjectPool> _pools = new();
         private static Transform _poolRoot;
         private static bool _subscribed;
+        private static int _defaultMaxSize = BuiltInDefaultMaxSize;
 
         // ══════════════════════════════════════════════
         // Lifecycle
@@ -30,14 +33,29 @@ namespace Game.Framework.ObjectPooling
             _pools.Clear();
             _poolRoot = null;
             _subscribed = false;
+            _defaultMaxSize = BuiltInDefaultMaxSize;
         }
 
         // ══════════════════════════════════════════════
         // Public API
         // ══════════════════════════════════════════════
 
-        /// <summary>Pre-creates a pool (and optionally prewarms it) for a prefab. Optional.</summary>
-        public static void RegisterPrefab(GameObject prefab, int initialSize = 0, int maxSize = DefaultMaxSize)
+        /// <summary>
+        /// Reserve cap used whenever a pool is created without an explicit maxSize, for prefab
+        /// pools and <see cref="ClassPool{T}"/> alike. Set it once at startup; a value below 1 is
+        /// clamped, since a pool has to be able to hold something.
+        /// </summary>
+        public static int DefaultMaxSize
+        {
+            get => _defaultMaxSize;
+            set => _defaultMaxSize = Mathf.Max(1, value);
+        }
+
+        /// <summary>
+        /// Pre-creates a pool (and optionally prewarms it) for a prefab. Optional.
+        /// A maxSize of 0 or less means "use <see cref="DefaultMaxSize"/>".
+        /// </summary>
+        public static void RegisterPrefab(GameObject prefab, int initialSize = 0, int maxSize = 0)
         {
             if (prefab == null)
                 return;
@@ -51,7 +69,8 @@ namespace Game.Framework.ObjectPooling
             if (_pools.ContainsKey(key))
                 return;
 
-            _pools[key] = new ObjectPool(prefab, initialSize, maxSize, EnsureRoot());
+            int reserveCap = maxSize > 0 ? maxSize : _defaultMaxSize;
+            _pools[key] = new ObjectPool(prefab, initialSize, reserveCap, EnsureRoot());
         }
 
         public static GameObject Get(GameObject prefab, Vector3 position, Transform parent = null)
