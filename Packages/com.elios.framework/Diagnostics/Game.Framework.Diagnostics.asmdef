@@ -1,9 +1,7 @@
 {
-    "name": "Game.Framework.Ticking",
-    "rootNamespace": "Game.Framework.Ticking",
-    "references": [
-        "Game.Framework.Diagnostics"
-    ],
+    "name": "Game.Framework.Diagnostics",
+    "rootNamespace": "",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

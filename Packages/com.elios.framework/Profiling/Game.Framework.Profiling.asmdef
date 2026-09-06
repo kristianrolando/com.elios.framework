@@ -2,7 +2,7 @@
     "name": "Game.Framework.Profiling",
     "rootNamespace": "Game.Framework.Profiling",
     "references": [
-        "Game.Utils",
+        "Game.Framework.Diagnostics",
         "Unity.InputSystem",
         "UnityEngine.UI"
     ],

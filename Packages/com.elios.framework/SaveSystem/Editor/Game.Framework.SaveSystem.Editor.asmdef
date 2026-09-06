@@ -3,7 +3,7 @@
     "rootNamespace": "Game.Framework.SaveSystem.Editor",
     "references": [
         "Game.Framework.SaveSystem",
-        "Game.Utils"
+        "Game.Framework.Diagnostics"
     ],
     "includePlatforms": [
         "Editor"

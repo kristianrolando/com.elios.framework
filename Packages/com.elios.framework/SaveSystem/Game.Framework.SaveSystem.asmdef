@@ -2,7 +2,7 @@
     "name": "Game.Framework.SaveSystem",
     "rootNamespace": "Game.Framework.SaveSystem",
     "references": [
-        "Game.Utils"
+        "Game.Framework.Diagnostics"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
