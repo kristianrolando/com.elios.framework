@@ -1,6 +1,6 @@
 # Framework — Engine Layer
 
-Entry point for `Assets/_Main/Framework`. Five self-contained subsystems that gameplay stands
+Entry point for the Elios Framework package. Five self-contained subsystems that gameplay stands
 on. Each has its own asmdef and its own README with the full API; **this file is the map: what
 each one is for, how they boot, and the rules that cut across all of them.**
 
@@ -18,19 +18,38 @@ has no callers: normal in-scene communication still goes through a plain C# `eve
 
 ---
 
-## 1. Dependency rule
+## Installation
 
-Every asmdef references **at most `Game.Utils`** — Profiling also takes `Unity.InputSystem` and
-`UnityEngine.UI`, and EventBus references nothing at all. Nothing here references gameplay, and
-nothing here knows what a room, an enemy, or a player is.
+This package is developed inside the [Final-GameTut](https://github.com/kristianrolando/Final-GameTut)
+project and published from there to its own repo,
+[com.elios.framework](https://github.com/kristianrolando/com.elios.framework).
 
-`Game.Utils` itself pulls in `Lofelt.NiceVibrations`, `MoreMountains.Tools` and `UnityEngine.UI`
-(haptics and the screen fader), so those ride along into every framework assembly.
+In another Unity project, open **Window → Package Manager → Add package from git URL** and use:
 
 ```
-Game.Scripts (default assembly)  ──►  Game.Framework.*  ──►  Game.Utils
-                                                   ▲
-                        Game.Framework.*.Editor ───┘   (SaveSystem, Profiling; Editor platform only)
+https://github.com/kristianrolando/com.elios.framework.git#v1.0.0
+```
+
+Pin to a tag (`#v1.0.0`) for a fixed version, or omit the tag to track the default branch.
+`com.unity.nuget.newtonsoft-json` is pulled in automatically as a dependency.
+
+---
+
+## 1. Dependency rule
+
+Every asmdef references **at most `Game.Framework.Diagnostics`** — Profiling also takes
+`Unity.InputSystem` and `UnityEngine.UI`, and EventBus references nothing at all. No framework
+asmdef references game code. Nothing here references gameplay, and nothing here knows what a
+room, an enemy, or a player is.
+
+`Game.Framework.Diagnostics` wraps `EditorDebug`, the one thing every other framework module
+needs. It has no dependencies of its own, so nothing rides along into the framework from the
+game side.
+
+```
+Game.Scripts (default assembly)  ──►  Game.Framework.*  ──►  Game.Framework.Diagnostics
+                                                   ▲                        ▲
+                        Game.Framework.*.Editor ───┘        Game.Utils ─────┘
 ```
 
 Adding a `Game.Gameplay.*` reference to any framework asmdef is a design error: push the
