@@ -12,7 +12,21 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
+    "defineConstraints": [
+        "FRAMEWORK_HAS_INPUTSYSTEM",
+        "FRAMEWORK_HAS_UGUI"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.inputsystem",
+            "expression": "1.0.0",
+            "define": "FRAMEWORK_HAS_INPUTSYSTEM"
+        },
+        {
+            "name": "com.unity.ugui",
+            "expression": "1.0.0",
+            "define": "FRAMEWORK_HAS_UGUI"
+        }
+    ],
     "noEngineReferences": false
 }
