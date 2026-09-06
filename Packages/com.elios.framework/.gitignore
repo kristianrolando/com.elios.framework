@@ -1,0 +1,9 @@
+.DS_Store
+*.pidb
+*.booproj
+*.user
+*.userprefs
+*.suo
+*.tmp
+*.userosscache
+*.sln.docstates
