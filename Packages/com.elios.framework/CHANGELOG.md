@@ -4,6 +4,13 @@ All notable changes to this package are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-09-18
+
+### Fixed
+- Ship the `.meta` files for `package.json` and `CHANGELOG.md`. Without them Unity logs
+  "has no meta file, but it's in an immutable folder" on every import when the package is
+  installed from a git URL. No code changes.
+
 ## [1.0.0] - 2026-09-06
 
 First release as a UPM package. Extracted from the game project it grew in,
