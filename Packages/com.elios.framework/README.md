@@ -20,18 +20,24 @@ has no callers: normal in-scene communication still goes through a plain C# `eve
 
 ## Installation
 
-This package is developed inside the [Final-GameTut](https://github.com/kristianrolando/Final-GameTut)
-project and published from there to its own repo,
-[com.elios.framework](https://github.com/kristianrolando/com.elios.framework).
+This package lives in its own repo,
+[com.elios.framework](https://github.com/kristianrolando/com.elios.framework). The repo root is a
+Unity project (the *host* project used to develop and test the package); the package itself is
+the `Packages/com.elios.framework/` folder, which is why the install URL carries a `?path=`.
 
 In another Unity project, open **Window → Package Manager → Add package from git URL** and use:
 
 ```
-https://github.com/kristianrolando/com.elios.framework.git#v1.0.0
+https://github.com/kristianrolando/com.elios.framework.git?path=/Packages/com.elios.framework#v1.0.0
 ```
 
-Pin to a tag (`#v1.0.0`) for a fixed version, or omit the tag to track the default branch.
-`com.unity.nuget.newtonsoft-json` is pulled in automatically as a dependency.
+Always pin to a tag (`#v1.0.0`): Unity locks git packages in `packages-lock.json`, so a branch
+reference never picks up new commits. `com.unity.nuget.newtonsoft-json` is pulled in
+automatically as a dependency.
+
+To edit the package from another project instead of from this repo, point that project's
+`manifest.json` at your local clone (`file:../../com.elios.framework/Packages/com.elios.framework`);
+the package then shows as *Local* and is editable in place.
 
 ---
 
