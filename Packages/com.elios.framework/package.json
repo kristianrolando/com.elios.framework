@@ -1,9 +1,16 @@
 {
   "name": "com.elios.framework",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "displayName": "Elios Framework",
   "description": "Reusable engine layer for Unity games: a single update loop (Ticking), zero-setup object pooling, a slot-based JSON save system, an enum-keyed event bus, editor-only diagnostics logging, and an optional performance profiler.",
   "unity": "6000.3",
+  "license": "LicenseRef-Proprietary",
+  "documentationUrl": "https://github.com/kristianrolando/com.elios.framework/blob/main/Packages/com.elios.framework/README.md",
+  "changelogUrl": "https://github.com/kristianrolando/com.elios.framework/blob/main/Packages/com.elios.framework/CHANGELOG.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kristianrolando/com.elios.framework.git"
+  },
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.2.2"
   },
