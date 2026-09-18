@@ -38,11 +38,19 @@ secrets (*Settings → Secrets and variables → Actions*):
 | `UNITY_EMAIL` | Unity ID email |
 | `UNITY_PASSWORD` | Unity ID password |
 
-To obtain the `.ulf`: run the manual-only **Acquire activation file** workflow
-(`.github/workflows/activation.yml`) from the Actions tab, download its `.alf` artifact, upload
-that at [license.unity3d.com/manual](https://license.unity3d.com/manual) choosing *Personal*, and
-paste the downloaded `.ulf` into `UNITY_LICENSE`. Each Unity version needs its own `.ulf`, so
-repeat this when `unityVersion` changes. Until the secrets exist the test job fails at activation.
+To obtain the `.ulf`, take `Unity_lic.ulf` from a machine where Unity Hub activated a Personal
+licence (`/Library/Application Support/Unity/` on macOS, `C:\ProgramData\Unity\` on Windows).
+If the Hub never wrote one, generate an activation request with the local editor and exchange it
+by hand:
+
+```
+Unity -batchmode -nographics -createManualActivationFile -projectPath <any empty folder> -quit
+```
+
+Upload the resulting `Unity_v6000.3.13f1.alf` at
+[license.unity3d.com/manual](https://license.unity3d.com/manual), choose *Personal*, and paste
+the downloaded `.ulf` into `UNITY_LICENSE`. Until the secrets exist the test job fails at
+activation.
 
 ## License
 
