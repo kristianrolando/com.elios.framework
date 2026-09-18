@@ -26,32 +26,6 @@ Open the repository root in Unity Hub (6000.3.13f1). The package is embedded, so
 *Window > General > Test Runner*. To release: bump `version` in `package.json`, add a
 `CHANGELOG.md` entry, commit, tag `vX.Y.Z`, and push with tags.
 
-## CI
-
-`.github/workflows/tests.yml` runs the Edit Mode suite on every push, pull request and `v*` tag
-through [GameCI](https://game.ci). It activates a **Unity Personal** licence from three repository
-secrets (*Settings → Secrets and variables → Actions*):
-
-| Secret | Value |
-|---|---|
-| `UNITY_LICENSE` | Full contents of a `Unity_v6000.x.ulf` activation file |
-| `UNITY_EMAIL` | Unity ID email |
-| `UNITY_PASSWORD` | Unity ID password |
-
-To obtain the `.ulf`, take `Unity_lic.ulf` from a machine where Unity Hub activated a Personal
-licence (`/Library/Application Support/Unity/` on macOS, `C:\ProgramData\Unity\` on Windows).
-If the Hub never wrote one, generate an activation request with the local editor and exchange it
-by hand:
-
-```
-Unity -batchmode -nographics -createManualActivationFile -projectPath <any empty folder> -quit
-```
-
-Upload the resulting `Unity_v6000.3.13f1.alf` at
-[license.unity3d.com/manual](https://license.unity3d.com/manual), choose *Personal*, and paste
-the downloaded `.ulf` into `UNITY_LICENSE`. Until the secrets exist the test job fails at
-activation.
-
 ## License
 
 Proprietary, all rights reserved. See [LICENSE](LICENSE).

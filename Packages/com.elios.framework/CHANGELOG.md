@@ -8,7 +8,6 @@ and this package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `LICENSE.md` inside the package, so the Package Manager shows the licence.
-- GitHub Actions workflow running the Edit Mode tests on every push, pull request and tag.
 - README: a table of the external packages each module needs and how Profiling is gated.
 
 ### Changed
