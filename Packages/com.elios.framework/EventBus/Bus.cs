@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Framework.EventBus
+namespace Elios.Framework.EventBus
 {
     // Enum-keyed pub/sub. See README.md in this folder for usage and full API reference.
     public static class Bus<TEnum> where TEnum : struct, Enum

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Framework.ObjectPooling
+namespace Elios.Framework.ObjectPooling
 {
     // Simple per-prefab object pool.
     // - One pool per prefab (key = prefab.GetInstanceID()).

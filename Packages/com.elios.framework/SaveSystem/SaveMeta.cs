@@ -1,6 +1,6 @@
 using System;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     [Serializable]
     public sealed class SaveMeta

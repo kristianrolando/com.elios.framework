@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Game.Framework.Ticking
+namespace Elios.Framework.Ticking
 {
     // Drives the loop through TickManager's internal Run* entry points, which is what TickDriver
     // calls every frame. Nothing here depends on the editor actually rendering a frame.

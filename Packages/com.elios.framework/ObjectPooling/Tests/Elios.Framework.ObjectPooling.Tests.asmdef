@@ -1,8 +1,8 @@
 {
-    "name": "Game.Framework.SaveSystem.Tests",
-    "rootNamespace": "Game.Framework.SaveSystem",
+    "name": "Elios.Framework.ObjectPooling.Tests",
+    "rootNamespace": "Elios.Framework.ObjectPooling",
     "references": [
-        "Game.Framework.SaveSystem",
+        "Elios.Framework.ObjectPooling",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

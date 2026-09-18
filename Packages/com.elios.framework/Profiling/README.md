@@ -1,7 +1,7 @@
 # Profiling
 
-Map of the Profiling subsystem. Namespace `Game.Framework.Profiling`
-(+ `.Editor`). Asmdef references only `Game.Framework.Diagnostics`, `Unity.InputSystem`, `UnityEngine.UI`.
+Map of the Profiling subsystem. Namespace `Elios.Framework.Profiling`
+(+ `.Editor`). Asmdef references only `Elios.Framework.Diagnostics`, `Unity.InputSystem`, `UnityEngine.UI`.
 
 **Diagnostics only.** Nothing in `Scripts/` references this folder and no gameplay decision reads
 these numbers. Deleting it changes nothing about how the game plays.

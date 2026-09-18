@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Game.Framework.Ticking
+namespace Elios.Framework.Ticking
 {
     // Single update loop for the whole game. One hidden MonoBehaviour drives every registered
     // object instead of Unity calling a separate Update() per component, so execution order is

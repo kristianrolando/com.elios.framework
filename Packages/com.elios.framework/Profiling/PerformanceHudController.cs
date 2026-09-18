@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Game.Framework.Profiling
+namespace Elios.Framework.Profiling
 {
     // Drives the in-game profiling HUD: owns the sampler and the scene scanner, handles the
     // toggle key, and pushes the result to the view on a fixed refresh interval so the numbers

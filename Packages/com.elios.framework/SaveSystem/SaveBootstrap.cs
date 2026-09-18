@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Auto-initialize save system before first scene loads.
     // Also flushes on application quit.

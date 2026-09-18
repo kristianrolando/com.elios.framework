@@ -1,7 +1,7 @@
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Centralised logging for the save system.
     // Verbose logs are opt-in (enableLogging) and editor-only via EditorDebug,

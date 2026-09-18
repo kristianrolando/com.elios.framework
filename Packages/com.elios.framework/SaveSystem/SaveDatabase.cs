@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     [Serializable]
     public sealed class SaveDatabase

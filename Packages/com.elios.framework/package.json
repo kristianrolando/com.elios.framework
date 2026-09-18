@@ -1,6 +1,6 @@
 {
   "name": "com.elios.framework",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "displayName": "Elios Framework",
   "description": "Reusable engine layer for Unity games: a single update loop (Ticking), zero-setup object pooling, a slot-based JSON save system, an enum-keyed event bus, editor-only diagnostics logging, and an optional performance profiler.",
   "unity": "6000.3",

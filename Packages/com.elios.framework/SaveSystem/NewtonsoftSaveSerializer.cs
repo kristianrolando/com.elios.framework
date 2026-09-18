@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Newtonsoft (Json.NET) implementation of ISaveSerializer.
     // This is the only engine-level file that references the JSON library directly;

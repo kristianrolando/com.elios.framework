@@ -21,7 +21,7 @@ A single update loop for the entire game. One hidden MonoBehaviour (`__TickDrive
 ## Quick Start
 
 ```csharp
-using Game.Framework.Ticking;
+using Elios.Framework.Ticking;
 using UnityEngine;
 
 public class ExampleController : MonoBehaviour, ITickable

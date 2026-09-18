@@ -1,4 +1,4 @@
-namespace Game.Framework.Ticking
+namespace Elios.Framework.Ticking
 {
     // Scaled update. Replaces Update(). deltaTime is Time.deltaTime, so it stops at timeScale 0.
     public interface ITickable

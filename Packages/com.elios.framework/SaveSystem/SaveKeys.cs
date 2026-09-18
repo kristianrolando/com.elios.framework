@@ -1,4 +1,4 @@
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Strongly recommended fixed keys to avoid typo/human error.
     // Add your own keys here over time.

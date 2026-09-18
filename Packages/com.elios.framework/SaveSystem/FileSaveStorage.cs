@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // One file per slot storage. When an ISaveEncryptor is supplied, payloads are
     // written encrypted (tagged with a magic header). Reads auto-detect the header, so plaintext

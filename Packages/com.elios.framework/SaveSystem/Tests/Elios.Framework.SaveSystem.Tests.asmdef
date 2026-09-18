@@ -1,8 +1,8 @@
 {
-    "name": "Game.Framework.Ticking.Tests",
-    "rootNamespace": "Game.Framework.Ticking",
+    "name": "Elios.Framework.SaveSystem.Tests",
+    "rootNamespace": "Elios.Framework.SaveSystem",
     "references": [
-        "Game.Framework.Ticking",
+        "Elios.Framework.SaveSystem",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

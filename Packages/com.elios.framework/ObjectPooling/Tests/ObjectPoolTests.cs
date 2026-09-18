@@ -2,7 +2,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Game.Framework.ObjectPooling
+namespace Elios.Framework.ObjectPooling
 {
     // Exercises ObjectPool directly through its public constructor, so every test owns its own
     // reserve and its own root transform.

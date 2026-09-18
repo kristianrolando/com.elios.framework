@@ -2,7 +2,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Game.Framework.ObjectPooling
+namespace Elios.Framework.ObjectPooling
 {
     // Covers the static facade: pool creation on demand, routing a return back to the pool that
     // owns the instance, and dropping pools.

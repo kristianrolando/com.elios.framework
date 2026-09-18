@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Game.Framework.Profiling.Editor
+namespace Elios.Framework.Profiling.Editor
 {
     // Editor-side companion to the in-game HUD. Two sources of truth sit next to each other here:
     //

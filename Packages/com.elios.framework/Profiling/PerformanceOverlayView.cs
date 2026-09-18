@@ -1,7 +1,7 @@
 using System.Text;
 using UnityEngine;
 
-namespace Game.Framework.Profiling
+namespace Elios.Framework.Profiling
 {
     public enum ScreenCorner
     {

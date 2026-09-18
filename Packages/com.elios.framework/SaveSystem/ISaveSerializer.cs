@@ -1,4 +1,4 @@
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Serialisation boundary for the save system. Keeps the concrete JSON library out of
     // SaveService and the data model, so the backend can be swapped without

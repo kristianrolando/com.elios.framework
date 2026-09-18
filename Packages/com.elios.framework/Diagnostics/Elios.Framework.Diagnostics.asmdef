@@ -1,5 +1,5 @@
 {
-    "name": "Game.Framework.Diagnostics",
+    "name": "Elios.Framework.Diagnostics",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [],

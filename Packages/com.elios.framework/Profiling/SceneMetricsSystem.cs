@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Framework.Profiling
+namespace Elios.Framework.Profiling
 {
     // Samples the things Unity exposes no profiler counter for: how much of the screen the 2D
     // renderers actually cover, and how heavy the Physics2D setup in the scene is.

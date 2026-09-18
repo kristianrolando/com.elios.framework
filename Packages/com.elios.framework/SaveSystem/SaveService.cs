@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Core save engine. PlayerPrefs-like usage but backed by JSON DB per slot.
     public sealed class SaveService

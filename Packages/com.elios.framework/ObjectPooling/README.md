@@ -26,7 +26,7 @@ A lightweight, **zero-setup** object pool. Reuse GameObjects instead of `Instant
 ## Quick Start
 
 ```csharp
-using Game.Framework.ObjectPooling;
+using Elios.Framework.ObjectPooling;
 
 // Spawn (a pool for this prefab is created automatically the first time)
 GameObject bullet = ObjectPoolManager.Get(bulletPrefab, spawnPoint.position);
@@ -100,7 +100,7 @@ ObjectPoolManager.LogStats(); // prints active/reserve/rented/returned per pool
 Pooled objects **keep their previous state** (velocity, running coroutines, particles, timers). Implement `IPoolable` on the prefab (root or any child) to reset/initialize cleanly:
 
 ```csharp
-using Game.Framework.ObjectPooling;
+using Elios.Framework.ObjectPooling;
 using UnityEngine;
 
 public sealed class Bullet : MonoBehaviour, IPoolable
@@ -164,7 +164,7 @@ ObjectPoolManager.DefaultMaxSize = 500;
 `ClassPool<T>` is the same reserve for objects that are not GameObjects: runtime state objects, command/request objects, working buffers. It takes a factory instead of a prefab.
 
 ```csharp
-using Game.Framework.ObjectPooling;
+using Elios.Framework.ObjectPooling;
 
 private readonly ClassPool<DamageRequest> _requests =
     new ClassPool<DamageRequest>(() => new DamageRequest(), initialSize: 8);

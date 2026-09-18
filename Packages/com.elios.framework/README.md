@@ -6,11 +6,11 @@ each one is for, how they boot, and the rules that cut across all of them.**
 
 | Subsystem | Namespace | Replaces | Users in `Scripts/` | Deep doc |
 |---|---|---|---|---|
-| **Ticking** | `Game.Framework.Ticking` | `Update` / `FixedUpdate` / `LateUpdate` | 17 files | [README](Ticking/README.md) |
-| **ObjectPooling** | `Game.Framework.ObjectPooling` | `Instantiate` / `Destroy` | 14 files | [README](ObjectPooling/README.md) |
-| **SaveSystem** | `Game.Framework.SaveSystem` | `PlayerPrefs` | 6 files | [README](SaveSystem/README.md) |
-| **Profiling** | `Game.Framework.Profiling` | Unity Profiler window (in-build) | 0 — scene-only HUD | [README](Profiling/README.md) |
-| **EventBus** | `Game.Framework.EventBus` | direct references between systems | **0 — built, not adopted** | [README](EventBus/README.md) |
+| **Ticking** | `Elios.Framework.Ticking` | `Update` / `FixedUpdate` / `LateUpdate` | 17 files | [README](Ticking/README.md) |
+| **ObjectPooling** | `Elios.Framework.ObjectPooling` | `Instantiate` / `Destroy` | 14 files | [README](ObjectPooling/README.md) |
+| **SaveSystem** | `Elios.Framework.SaveSystem` | `PlayerPrefs` | 6 files | [README](SaveSystem/README.md) |
+| **Profiling** | `Elios.Framework.Profiling` | Unity Profiler window (in-build) | 0 — scene-only HUD | [README](Profiling/README.md) |
+| **EventBus** | `Elios.Framework.EventBus` | direct references between systems | **0 — built, not adopted** | [README](EventBus/README.md) |
 
 Only the first three are load-bearing. Profiling is diagnostics, and EventBus is available but
 has no callers: normal in-scene communication still goes through a plain C# `event` on a Manager
@@ -28,10 +28,10 @@ the `Packages/com.elios.framework/` folder, which is why the install URL carries
 In another Unity project, open **Window → Package Manager → Add package from git URL** and use:
 
 ```
-https://github.com/kristianrolando/com.elios.framework.git?path=/Packages/com.elios.framework#v1.0.3
+https://github.com/kristianrolando/com.elios.framework.git?path=/Packages/com.elios.framework#v2.0.0
 ```
 
-Always pin to a tag (`#v1.0.3`): Unity locks git packages in `packages-lock.json`, so a branch
+Always pin to a tag (`#v2.0.0`): Unity locks git packages in `packages-lock.json`, so a branch
 reference never picks up new commits. `com.unity.nuget.newtonsoft-json` is pulled in
 automatically as a dependency.
 
@@ -43,19 +43,19 @@ the package then shows as *Local* and is editable in place.
 
 ## 1. Dependency rule
 
-Every asmdef references **at most `Game.Framework.Diagnostics`** — Profiling also takes
+Every asmdef references **at most `Elios.Framework.Diagnostics`** — Profiling also takes
 `Unity.InputSystem` and `UnityEngine.UI`, and EventBus references nothing at all. No framework
 asmdef references game code. Nothing here references gameplay, and nothing here knows what a
 room, an enemy, or a player is.
 
-`Game.Framework.Diagnostics` wraps `EditorDebug`, the one thing every other framework module
+`Elios.Framework.Diagnostics` wraps `EditorDebug`, the one thing every other framework module
 needs. It has no dependencies of its own, so nothing rides along into the framework from the
 game side.
 
 ```
-Game.Scripts (default assembly)  ──►  Game.Framework.*  ──►  Game.Framework.Diagnostics
+Game.Scripts (default assembly)  ──►  Elios.Framework.*  ──►  Elios.Framework.Diagnostics
                                                    ▲                        ▲
-                        Game.Framework.*.Editor ───┘        Game.Utils ─────┘
+                        Elios.Framework.*.Editor ───┘        Game.Utils ─────┘
 ```
 
 Adding a `Game.Gameplay.*` reference to any framework asmdef is a design error: push the

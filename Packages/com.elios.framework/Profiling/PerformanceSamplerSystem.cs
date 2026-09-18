@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Profiling;
 using UnityEngine;
 
-namespace Game.Framework.Profiling
+namespace Elios.Framework.Profiling
 {
     // Owns the ProfilerRecorder handles and the rolling frame time window. Object-agnostic: it
     // knows nothing about the scene, so the HUD and the editor window can both drive it.

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // AES encryption for save payloads with authentication (encrypt-then-MAC).
     // Uses AES-CBC + PKCS7 with a per-write random salt and IV, keys derived from the password

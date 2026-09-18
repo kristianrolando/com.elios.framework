@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Framework.ObjectPooling
+namespace Elios.Framework.ObjectPooling
 {
     // Runtime marker that links an instance to its pool via PoolKey and
     // tracks whether it currently sits inside the pool. Added automatically by the pool;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Simple persistent id holder for object-based save keys.
     // Example usage:

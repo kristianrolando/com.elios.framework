@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Game.Framework.Profiling
+namespace Elios.Framework.Profiling
 {
     // Result of one on-demand scene scan. A plain data carrier: SceneAuditService fills it in,
     // the overlay and the editor window only read it.

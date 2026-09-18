@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Game.Framework.ObjectPooling
+namespace Elios.Framework.ObjectPooling
 {
     // Global facade for pooling.
     // - Automatically creates a pool per prefab on first use (no setup required).

@@ -1,8 +1,8 @@
 {
-    "name": "Game.Framework.Profiling",
-    "rootNamespace": "Game.Framework.Profiling",
+    "name": "Elios.Framework.Profiling",
+    "rootNamespace": "Elios.Framework.Profiling",
     "references": [
-        "Game.Framework.Diagnostics",
+        "Elios.Framework.Diagnostics",
         "Unity.InputSystem",
         "UnityEngine.UI"
     ],

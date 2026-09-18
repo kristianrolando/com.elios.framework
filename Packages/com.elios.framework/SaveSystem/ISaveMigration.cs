@@ -1,4 +1,4 @@
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Upgrades a loaded database from one schema version to the next.
     // One migration bumps data from FromVersion to FromVersion + 1.

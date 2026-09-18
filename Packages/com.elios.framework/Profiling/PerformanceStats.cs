@@ -1,4 +1,4 @@
-namespace Game.Framework.Profiling
+namespace Elios.Framework.Profiling
 {
     // Aggregated view over the sampler's rolling window. Recomputed on the refresh interval
     // rather than every frame, so the numbers stay readable and the sort stays cheap.

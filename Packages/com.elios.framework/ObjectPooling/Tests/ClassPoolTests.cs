@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Game.Framework.ObjectPooling
+namespace Elios.Framework.ObjectPooling
 {
     // Pure C# throughout: nothing here instantiates a GameObject, so no Object.Destroy is involved
     // and every path can be asserted directly in Edit Mode.

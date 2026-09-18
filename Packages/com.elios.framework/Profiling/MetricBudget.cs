@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Game.Framework.Profiling
+namespace Elios.Framework.Profiling
 {
     public enum BudgetLevel
     {

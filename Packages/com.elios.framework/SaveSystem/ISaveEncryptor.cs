@@ -1,4 +1,4 @@
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Transforms save payload bytes so they are not stored as readable plaintext.
     // Implementations must be able to reverse their own output.

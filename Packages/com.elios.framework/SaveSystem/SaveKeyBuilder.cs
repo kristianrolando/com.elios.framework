@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Helper to build dynamic namespaced keys consistently.
     public static class SaveKeyBuilder

@@ -1,8 +1,8 @@
 {
-    "name": "Game.Framework.Ticking",
-    "rootNamespace": "Game.Framework.Ticking",
+    "name": "Elios.Framework.Ticking",
+    "rootNamespace": "Elios.Framework.Ticking",
     "references": [
-        "Game.Framework.Diagnostics"
+        "Elios.Framework.Diagnostics"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

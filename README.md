@@ -14,7 +14,7 @@ This repository is a Unity host project wrapping the package. **The package itse
 Add this line to your project's `Packages/manifest.json`, pinned to a release tag:
 
 ```json
-"com.elios.framework": "https://github.com/kristianrolando/com.elios.framework.git?path=/Packages/com.elios.framework#v1.0.3"
+"com.elios.framework": "https://github.com/kristianrolando/com.elios.framework.git?path=/Packages/com.elios.framework#v2.0.0"
 ```
 
 Requires Unity 6000.3 or newer. `com.unity.nuget.newtonsoft-json` is pulled in automatically.

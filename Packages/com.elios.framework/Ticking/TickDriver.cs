@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Framework.Ticking
+namespace Elios.Framework.Ticking
 {
     // The only Update/FixedUpdate/LateUpdate left in the project. Created automatically by
     // TickManager on the first registration; never add it to a scene by hand.

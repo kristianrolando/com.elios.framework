@@ -1,13 +1,10 @@
 {
-    "name": "Game.Framework.SaveSystem.Editor",
-    "rootNamespace": "Game.Framework.SaveSystem.Editor",
+    "name": "Elios.Framework.ObjectPooling",
+    "rootNamespace": "Elios.Framework.ObjectPooling",
     "references": [
-        "Game.Framework.SaveSystem",
-        "Game.Framework.Diagnostics"
+        "Elios.Framework.Diagnostics"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

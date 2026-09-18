@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Bridges to platform-specific file-system persistence. On WebGL, writes to
     // persistentDataPath only reach the browser's IndexedDB after an explicit FS.syncfs, so the

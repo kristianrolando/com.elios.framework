@@ -1,4 +1,4 @@
-namespace Game.Framework.ObjectPooling
+namespace Elios.Framework.ObjectPooling
 {
     // Implement on any component of a pooled prefab (root or children) to reset
     // or initialize state as the instance is spawned from and returned to the pool.

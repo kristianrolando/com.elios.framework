@@ -1,7 +1,9 @@
 {
-    "name": "Game.Framework.EventBus",
-    "rootNamespace": "Game.Framework.EventBus",
-    "references": [],
+    "name": "Elios.Framework.SaveSystem",
+    "rootNamespace": "Elios.Framework.SaveSystem",
+    "references": [
+        "Elios.Framework.Diagnostics"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

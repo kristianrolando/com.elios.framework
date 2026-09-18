@@ -1,4 +1,4 @@
-namespace Game.Framework.Profiling
+namespace Elios.Framework.Profiling
 {
     // One frame of raw counters. A counter left at Unavailable could not be resolved on this
     // build: most render and memory counters only exist in the Editor and in Development Builds,

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     public interface ISaveStorage
     {

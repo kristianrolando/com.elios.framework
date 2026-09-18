@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Runs registered schema migrations when a slot is loaded, stepping the database
     // forward one version at a time until it matches the current schema version.

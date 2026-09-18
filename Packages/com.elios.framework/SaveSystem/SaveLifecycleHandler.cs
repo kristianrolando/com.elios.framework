@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // Persists unsaved changes when the app is backgrounded, loses focus, or quits.
     // On mobile, Application.quitting is unreliable (the OS can kill a suspended app),

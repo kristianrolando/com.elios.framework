@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-namespace Game.Framework.ObjectPooling
+namespace Elios.Framework.ObjectPooling
 {
     // Reserve of plain C# instances, for what a prefab pool cannot hold: runtime state objects,
     // command/request objects, working buffers. Same counters and the same IPoolable reset

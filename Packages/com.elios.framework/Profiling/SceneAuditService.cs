@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.UI;
 
-namespace Game.Framework.Profiling
+namespace Elios.Framework.Profiling
 {
     // On-demand deep scan of the active scene. Answers "what exactly is making this frame
     // expensive" with named objects instead of aggregate numbers.

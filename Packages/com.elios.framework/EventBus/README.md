@@ -18,7 +18,7 @@ Generic enum-based event bus for decoupled communication between systems (e.g. C
 ## Quick Start
 
 ```csharp
-using Game.Framework.EventBus;
+using Elios.Framework.EventBus;
 
 public enum CombatEvent { OnHit, OnEnemyDied }
 

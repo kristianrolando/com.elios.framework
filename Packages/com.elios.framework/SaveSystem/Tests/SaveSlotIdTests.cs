@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     public class SaveSlotIdTests
     {

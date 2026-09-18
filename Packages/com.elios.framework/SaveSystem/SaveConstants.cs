@@ -1,5 +1,5 @@
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     public static class SaveConstants
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     // File-system safe slot identifier.
     public readonly struct SaveSlotId : IEquatable<SaveSlotId>

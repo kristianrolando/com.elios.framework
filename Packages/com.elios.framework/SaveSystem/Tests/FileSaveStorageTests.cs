@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     public class FileSaveStorageTests
     {

@@ -1,9 +1,9 @@
 {
-    "name": "Game.Framework.Profiling.Editor",
-    "rootNamespace": "Game.Framework.Profiling.Editor",
+    "name": "Elios.Framework.Profiling.Editor",
+    "rootNamespace": "Elios.Framework.Profiling.Editor",
     "references": [
-        "Game.Framework.Profiling",
-        "Game.Framework.Diagnostics"
+        "Elios.Framework.Profiling",
+        "Elios.Framework.Diagnostics"
     ],
     "includePlatforms": [
         "Editor"

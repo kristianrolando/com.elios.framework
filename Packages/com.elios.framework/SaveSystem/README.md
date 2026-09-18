@@ -63,7 +63,7 @@ squiggles in [SaveJson.cs](SaveJson.cs) / [UnityJsonConverters.cs](UnityJsonConv
 ## Quick Start
 
 ```csharp
-using Game.Framework.SaveSystem;
+using Elios.Framework.SaveSystem;
 
 // Store (kept in memory; written to disk on flush/lifecycle)
 Save.Set("player/coins", 120);
@@ -301,7 +301,7 @@ recognises what the storage layer leaves behind — interrupted-write temp files
 encrypted-payload header — so an encrypted or half-written slot reads as that rather than as
 corrupt JSON.
 
-The window lives in `Editor/` behind `Game.Framework.SaveSystem.Editor.asmdef` (Editor platform
+The window lives in `Editor/` behind `Elios.Framework.SaveSystem.Editor.asmdef` (Editor platform
 only), so nothing in a build can reach it.
 
 ---

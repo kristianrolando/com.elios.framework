@@ -5,7 +5,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace Game.Framework.SaveSystem.Editor
+namespace Elios.Framework.SaveSystem.Editor
 {
     // Read-only browser for whatever the save system actually wrote to disk. It talks to the
     // file system directly and never calls Save/SaveService/FileSaveStorage, so opening this

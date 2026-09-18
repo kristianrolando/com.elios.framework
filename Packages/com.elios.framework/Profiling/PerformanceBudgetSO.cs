@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Framework.Profiling
+namespace Elios.Framework.Profiling
 {
     // Per-metric thresholds that turn the overlay numbers yellow and red. Defaults are tuned for
     // a 2D URP game at 1080p/60. Duplicate the asset and lower the thresholds to profile against

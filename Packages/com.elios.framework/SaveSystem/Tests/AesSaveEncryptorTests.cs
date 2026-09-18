@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using NUnit.Framework;
 
-namespace Game.Framework.SaveSystem
+namespace Elios.Framework.SaveSystem
 {
     public class AesSaveEncryptorTests
     {
