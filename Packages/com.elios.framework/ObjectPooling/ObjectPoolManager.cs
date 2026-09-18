@@ -4,11 +4,9 @@ using UnityEngine.SceneManagement;
 
 namespace Game.Framework.ObjectPooling
 {
-    /// <summary>
-    /// Global facade for pooling.
-    /// - Automatically creates a pool per prefab on first use (no setup required).
-    /// - Clears all pools automatically on active scene change.
-    /// </summary>
+    // Global facade for pooling.
+    // - Automatically creates a pool per prefab on first use (no setup required).
+    // - Clears all pools automatically on active scene change.
     public static class ObjectPoolManager
     {
         private const string PoolRootName = "__ObjectPoolRoot__";
@@ -40,21 +38,17 @@ namespace Game.Framework.ObjectPooling
         // Public API
         // ══════════════════════════════════════════════
 
-        /// <summary>
-        /// Reserve cap used whenever a pool is created without an explicit maxSize, for prefab
-        /// pools and <see cref="ClassPool{T}"/> alike. Set it once at startup; a value below 1 is
-        /// clamped, since a pool has to be able to hold something.
-        /// </summary>
+        // Reserve cap used whenever a pool is created without an explicit maxSize, for prefab
+        // pools and ClassPool{T} alike. Set it once at startup; a value below 1 is
+        // clamped, since a pool has to be able to hold something.
         public static int DefaultMaxSize
         {
             get => _defaultMaxSize;
             set => _defaultMaxSize = Mathf.Max(1, value);
         }
 
-        /// <summary>
-        /// Pre-creates a pool (and optionally prewarms it) for a prefab. Optional.
-        /// A maxSize of 0 or less means "use <see cref="DefaultMaxSize"/>".
-        /// </summary>
+        // Pre-creates a pool (and optionally prewarms it) for a prefab. Optional.
+        // A maxSize of 0 or less means "use DefaultMaxSize".
         public static void RegisterPrefab(GameObject prefab, int initialSize = 0, int maxSize = 0)
         {
             if (prefab == null)
@@ -139,7 +133,7 @@ namespace Game.Framework.ObjectPooling
             _pools.Clear();
         }
 
-        /// <summary>Editor-only dump of per-pool counters, useful for spotting leaks.</summary>
+        // Editor-only dump of per-pool counters, useful for spotting leaks.
         public static void LogStats()
         {
             foreach (KeyValuePair<int, ObjectPool> kv in _pools)

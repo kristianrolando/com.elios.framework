@@ -5,17 +5,13 @@ namespace Game.Framework.SaveSystem
     [Serializable]
     public sealed class SaveEntry
     {
-        /// <summary>
-        /// Optional type info (Type.FullName) for debugging and migration support.
-        /// Not used for deserialization authority; kept version-agnostic on purpose.
-        /// </summary>
+        // Optional type info (Type.FullName) for debugging and migration support.
+        // Not used for deserialization authority; kept version-agnostic on purpose.
         public string typeName;
 
-        /// <summary>
-        /// Opaque stored token for this key. Its concrete type is owned by the active
-        /// <see cref="ISaveSerializer"/>, so engine code must not assume it (use the serializer
-        /// to read/write it). Typed as object to keep the data model serializer-agnostic.
-        /// </summary>
+        // Opaque stored token for this key. Its concrete type is owned by the active
+        // ISaveSerializer, so engine code must not assume it (use the serializer
+        // to read/write it). Typed as object to keep the data model serializer-agnostic.
         public object value;
 
         public DateTime modifiedUtc;

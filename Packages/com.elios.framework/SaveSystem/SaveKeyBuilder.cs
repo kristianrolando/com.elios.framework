@@ -3,9 +3,7 @@ using System.Text;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Helper to build dynamic namespaced keys consistently.
-    /// </summary>
+    // Helper to build dynamic namespaced keys consistently.
     public static class SaveKeyBuilder
     {
         public static string StageCompleted(string stageId)
@@ -29,9 +27,7 @@ namespace Game.Framework.SaveSystem
         public static string Custom(params string[] segments)
             => Join(segments);
 
-        /// <summary>
-        /// Normalize a fully composed key path. Keeps slash hierarchy, normalizes segments.
-        /// </summary>
+        // Normalize a fully composed key path. Keeps slash hierarchy, normalizes segments.
         public static string NormalizeRawKey(string rawKey)
         {
             if (string.IsNullOrWhiteSpace(rawKey))
@@ -43,9 +39,7 @@ namespace Game.Framework.SaveSystem
             return Join(parts);
         }
 
-        /// <summary>
-        /// Creates a path-like key. Each segment is normalized to reduce typo/format issues.
-        /// </summary>
+        // Creates a path-like key. Each segment is normalized to reduce typo/format issues.
         public static string Join(params string[] segments)
         {
             if (segments == null || segments.Length == 0)
@@ -67,9 +61,7 @@ namespace Game.Framework.SaveSystem
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Safe segment for key namespaces. Converts spaces and illegal chars to underscore, lowercases.
-        /// </summary>
+        // Safe segment for key namespaces. Converts spaces and illegal chars to underscore, lowercases.
         public static string NormalizeSegment(string raw)
         {
             raw = (raw ?? string.Empty).Trim();

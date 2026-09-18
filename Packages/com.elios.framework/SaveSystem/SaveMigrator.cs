@@ -2,11 +2,9 @@ using System.Collections.Generic;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Runs registered schema migrations when a slot is loaded, stepping the database
-    /// forward one version at a time until it matches the current schema version.
-    /// Register future migrations in <see cref="Migrations"/>.
-    /// </summary>
+    // Runs registered schema migrations when a slot is loaded, stepping the database
+    // forward one version at a time until it matches the current schema version.
+    // Register future migrations in Migrations.
     public static class SaveMigrator
     {
         // Ordered by FromVersion. Add a new ISaveMigration here whenever the schema changes.
@@ -15,10 +13,8 @@ namespace Game.Framework.SaveSystem
             // Example: new Migration_1_To_2(),
         };
 
-        /// <summary>
-        /// Brings the database up to <see cref="SaveConstants.CurrentSchemaVersion"/>.
-        /// Returns true if anything changed, so the caller can persist the upgrade.
-        /// </summary>
+        // Brings the database up to SaveConstants.CurrentSchemaVersion.
+        // Returns true if anything changed, so the caller can persist the upgrade.
         public static bool Migrate(SaveDatabase database)
         {
             if (database?.meta == null)

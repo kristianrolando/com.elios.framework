@@ -3,9 +3,7 @@ using System.Collections.Generic;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Core save engine. PlayerPrefs-like usage but backed by JSON DB per slot.
-    /// </summary>
+    // Core save engine. PlayerPrefs-like usage but backed by JSON DB per slot.
     public sealed class SaveService
     {
         private readonly ISaveStorage _storage;
@@ -92,10 +90,8 @@ namespace Game.Framework.SaveSystem
             return _storage.ListSlots();
         }
 
-        /// <summary>
-        /// Reads a slot's metadata without loading it into the active state.
-        /// Useful for building a load-game screen. Returns false if the slot is missing or unreadable.
-        /// </summary>
+        // Reads a slot's metadata without loading it into the active state.
+        // Useful for building a load-game screen. Returns false if the slot is missing or unreadable.
         public bool TryGetSlotMeta(SaveSlotId slotId, out SaveMeta meta)
         {
             meta = null;

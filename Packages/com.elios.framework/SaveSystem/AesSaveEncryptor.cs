@@ -4,15 +4,13 @@ using System.Security.Cryptography;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// AES encryption for save payloads with authentication (encrypt-then-MAC).
-    /// Uses AES-CBC + PKCS7 with a per-write random salt and IV, keys derived from the password
-    /// with PBKDF2 (Rfc2898DeriveBytes), and an HMAC-SHA256 over the whole payload so tampering or
-    /// corruption is detected on decrypt. Output layout is [salt][iv][ciphertext][hmac].
-    ///
-    /// Note: a password compiled into the build only deters casual editing — a determined user can
-    /// still recover it by decompiling. Treat it as tamper *friction*, not server-grade anti-cheat.
-    /// </summary>
+    // AES encryption for save payloads with authentication (encrypt-then-MAC).
+    // Uses AES-CBC + PKCS7 with a per-write random salt and IV, keys derived from the password
+    // with PBKDF2 (Rfc2898DeriveBytes), and an HMAC-SHA256 over the whole payload so tampering or
+    // corruption is detected on decrypt. Output layout is [salt][iv][ciphertext][hmac].
+    //
+    // Note: a password compiled into the build only deters casual editing — a determined user can
+    // still recover it by decompiling. Treat it as tamper *friction*, not server-grade anti-cheat.
     public sealed class AesSaveEncryptor : ISaveEncryptor
     {
         private const int KeySize = 16;    // 128-bit AES key

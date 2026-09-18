@@ -2,11 +2,9 @@ using UnityEngine;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Simple persistent id holder for object-based save keys.
-    /// Example usage:
-    /// Save.Set(SaveKeyBuilder.ObjectState(uniqueId.Value), myState);
-    /// </summary>
+    // Simple persistent id holder for object-based save keys.
+    // Example usage:
+    // Save.Set(SaveKeyBuilder.ObjectState(uniqueId.Value), myState);
     [DisallowMultipleComponent]
     public sealed class UniqueId : MonoBehaviour
     {

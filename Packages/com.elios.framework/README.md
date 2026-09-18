@@ -28,10 +28,10 @@ the `Packages/com.elios.framework/` folder, which is why the install URL carries
 In another Unity project, open **Window → Package Manager → Add package from git URL** and use:
 
 ```
-https://github.com/kristianrolando/com.elios.framework.git?path=/Packages/com.elios.framework#v1.0.0
+https://github.com/kristianrolando/com.elios.framework.git?path=/Packages/com.elios.framework#v1.0.3
 ```
 
-Always pin to a tag (`#v1.0.0`): Unity locks git packages in `packages-lock.json`, so a branch
+Always pin to a tag (`#v1.0.3`): Unity locks git packages in `packages-lock.json`, so a branch
 reference never picks up new commits. `com.unity.nuget.newtonsoft-json` is pulled in
 automatically as a dependency.
 
@@ -60,6 +60,24 @@ Game.Scripts (default assembly)  ──►  Game.Framework.*  ──►  Game.Fr
 
 Adding a `Game.Gameplay.*` reference to any framework asmdef is a design error: push the
 gameplay-specific part up into `Scripts/` instead.
+
+### External packages per module
+
+What each module needs from outside this package, so a new project knows what to install
+before the first error shows up.
+
+| Module | Needs | How it is enforced |
+|---|---|---|
+| Diagnostics | nothing | — |
+| Ticking | nothing | — |
+| ObjectPooling | nothing | — |
+| EventBus | nothing | — |
+| SaveSystem | `com.unity.nuget.newtonsoft-json` | Declared in `package.json`, so the Package Manager installs it with the framework |
+| Profiling | `com.unity.inputsystem` (HUD toggle key) and `com.unity.ugui` (canvas audit) | **Optional.** `versionDefines` set `FRAMEWORK_HAS_INPUTSYSTEM` / `FRAMEWORK_HAS_UGUI` when the package is present, and `defineConstraints` on both Profiling asmdefs require them. Missing either one silently skips the whole Profiling assembly instead of failing the build |
+| `*/Tests` | `com.unity.test-framework` | Test asmdefs only compile when the Test Framework is installed and the package is listed under `testables` in the host `manifest.json` |
+
+Newtonsoft is the only hard external dependency. Everything else is either engine-only or
+gated so the module disappears cleanly when its package is absent.
 
 ---
 
@@ -249,3 +267,5 @@ Statics reset automatically on entry to Play Mode; `ClearAll()` is there for a m
 - Diagnostic logs go through `EditorDebug` (stripped from builds); only genuine persistence
   failures use `Debug.LogError` (see `SaveLog` for the split).
 - Update the subsystem's own README when you change its public API — this file only maps.
+- Comments are plain `//` lines, never XML doc (`///`, `<summary>`). The package used to carry
+  XML docs; they were converted in 1.0.3 so the rule matches the projects that consume it.

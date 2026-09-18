@@ -3,13 +3,11 @@ using UnityEngine;
 
 namespace Game.Framework.ObjectPooling
 {
-    /// <summary>
-    /// Simple per-prefab object pool.
-    /// - One pool per prefab (key = prefab.GetInstanceID()).
-    /// - Prewarms via initialSize; caps the reserve at maxSize.
-    /// - Notifies IPoolable components on spawn/return.
-    /// - Tracks TotalRented / TotalReturned / ActiveCount for diagnostics.
-    /// </summary>
+    // Simple per-prefab object pool.
+    // - One pool per prefab (key = prefab.GetInstanceID()).
+    // - Prewarms via initialSize; caps the reserve at maxSize.
+    // - Notifies IPoolable components on spawn/return.
+    // - Tracks TotalRented / TotalReturned / ActiveCount for diagnostics.
     public sealed class ObjectPool
     {
         private readonly GameObject _prefab;
@@ -22,7 +20,7 @@ namespace Game.Framework.ObjectPooling
         public int TotalRented { get; private set; }
         public int TotalReturned { get; private set; }
 
-        /// <summary>Estimated number of instances currently rented out (not yet returned).</summary>
+        // Estimated number of instances currently rented out (not yet returned).
         public int ActiveCount => TotalRented - TotalReturned;
 
         // ══════════════════════════════════════════════

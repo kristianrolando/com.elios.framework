@@ -3,12 +3,10 @@ using Object = UnityEngine.Object;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Centralised logging for the save system.
-    /// Verbose logs are opt-in (<see cref="enableLogging"/>) and editor-only via EditorDebug,
-    /// so they are stripped from builds. Critical persistence failures use runtime logging so
-    /// they still surface in device/build logs.
-    /// </summary>
+    // Centralised logging for the save system.
+    // Verbose logs are opt-in (enableLogging) and editor-only via EditorDebug,
+    // so they are stripped from builds. Critical persistence failures use runtime logging so
+    // they still surface in device/build logs.
     internal static class SaveLog
     {
         // Toggle from gameplay via Save.EnableLogging. Off by default to keep the console quiet.

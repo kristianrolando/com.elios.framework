@@ -4,10 +4,8 @@ using UnityEngine;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Global PlayerPrefs-like API facade.
-    /// Use this from gameplay code.
-    /// </summary>
+    // Global PlayerPrefs-like API facade.
+    // Use this from gameplay code.
     public static class Save
     {
         private static SaveService _service;
@@ -19,7 +17,7 @@ namespace Game.Framework.SaveSystem
         public static bool IsDirty => _service != null && _service.IsDirty;
         public static string RootPath => _service != null ? _service.RootPath : null;
 
-        /// <summary>Enable opt-in, editor-only verbose logging for the save system.</summary>
+        // Enable opt-in, editor-only verbose logging for the save system.
         public static bool EnableLogging
         {
             get => SaveLog.enableLogging;
@@ -74,12 +72,10 @@ namespace Game.Framework.SaveSystem
             SetActiveSlot(slotId, flushCurrentIfDirty: true);
         }
 
-        /// <summary>
-        /// Enables (or disables, with a null/empty password) AES encryption of save files.
-        /// Call once at startup before the first Save access. Any pending changes are flushed with
-        /// the current settings before switching, but note that turning encryption off cannot read
-        /// files previously written with it.
-        /// </summary>
+        // Enables (or disables, with a null/empty password) AES encryption of save files.
+        // Call once at startup before the first Save access. Any pending changes are flushed with
+        // the current settings before switching, but note that turning encryption off cannot read
+        // files previously written with it.
         public static void ConfigureEncryption(string password)
         {
             if (_service != null)
@@ -134,7 +130,7 @@ namespace Game.Framework.SaveSystem
             return _service.ListSlots();
         }
 
-        /// <summary>Reads a slot's metadata without switching to it. Ideal for a load-game screen.</summary>
+        // Reads a slot's metadata without switching to it. Ideal for a load-game screen.
         public static bool TryGetSlotMeta(string slotId, out SaveMeta meta)
         {
             InitializeIfNeeded();

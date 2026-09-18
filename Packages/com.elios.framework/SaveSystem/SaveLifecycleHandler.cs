@@ -2,13 +2,11 @@ using UnityEngine;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Persists unsaved changes when the app is backgrounded, loses focus, or quits.
-    /// On mobile, Application.quitting is unreliable (the OS can kill a suspended app),
-    /// so OnApplicationPause/OnApplicationFocus are the primary flush signals.
-    /// On WebGL these focus/pause events are likewise the primary signals (OnApplicationQuit does
-    /// not fire on tab close); each flush is persisted to IndexedDB by the storage layer.
-    /// </summary>
+    // Persists unsaved changes when the app is backgrounded, loses focus, or quits.
+    // On mobile, Application.quitting is unreliable (the OS can kill a suspended app),
+    // so OnApplicationPause/OnApplicationFocus are the primary flush signals.
+    // On WebGL these focus/pause events are likewise the primary signals (OnApplicationQuit does
+    // not fire on tab close); each flush is persisted to IndexedDB by the storage layer.
     [DisallowMultipleComponent]
     public sealed class SaveLifecycleHandler : MonoBehaviour
     {

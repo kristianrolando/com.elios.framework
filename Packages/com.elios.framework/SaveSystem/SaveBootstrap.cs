@@ -3,10 +3,8 @@ using UnityEngine.SceneManagement;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Auto-initialize save system before first scene loads.
-    /// Also flushes on application quit.
-    /// </summary>
+    // Auto-initialize save system before first scene loads.
+    // Also flushes on application quit.
     public static class SaveBootstrap
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

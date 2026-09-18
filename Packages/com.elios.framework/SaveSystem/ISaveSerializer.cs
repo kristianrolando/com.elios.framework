@@ -1,13 +1,11 @@
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Serialisation boundary for the save system. Keeps the concrete JSON library out of
-    /// <see cref="SaveService"/> and the data model, so the backend can be swapped without
-    /// touching the engine.
-    ///
-    /// A "token" is the opaque stored representation of a single value (see <see cref="SaveEntry.value"/>).
-    /// Callers must not assume its concrete type.
-    /// </summary>
+    // Serialisation boundary for the save system. Keeps the concrete JSON library out of
+    // SaveService and the data model, so the backend can be swapped without
+    // touching the engine.
+    //
+    // A "token" is the opaque stored representation of a single value (see SaveEntry.value).
+    // Callers must not assume its concrete type.
     public interface ISaveSerializer
     {
         // Whole-database (de)serialisation.

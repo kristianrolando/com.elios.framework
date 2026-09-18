@@ -5,11 +5,9 @@ using System.Text;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// One file per slot storage. When an <see cref="ISaveEncryptor"/> is supplied, payloads are
-    /// written encrypted (tagged with a magic header). Reads auto-detect the header, so plaintext
-    /// files written before encryption was enabled still load transparently.
-    /// </summary>
+    // One file per slot storage. When an ISaveEncryptor is supplied, payloads are
+    // written encrypted (tagged with a magic header). Reads auto-detect the header, so plaintext
+    // files written before encryption was enabled still load transparently.
     public sealed class FileSaveStorage : ISaveStorage
     {
         // Prefix identifying an encrypted payload. Plain JSON never starts with these bytes.

@@ -1,15 +1,13 @@
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Upgrades a loaded database from one schema version to the next.
-    /// One migration bumps data from <see cref="FromVersion"/> to FromVersion + 1.
-    /// </summary>
+    // Upgrades a loaded database from one schema version to the next.
+    // One migration bumps data from FromVersion to FromVersion + 1.
     public interface ISaveMigration
     {
-        /// <summary>Schema version this migration expects as input.</summary>
+        // Schema version this migration expects as input.
         int FromVersion { get; }
 
-        /// <summary>Mutates <paramref name="database"/> in place to the next schema version.</summary>
+        // Mutates database in place to the next schema version.
         void Apply(SaveDatabase database);
     }
 }

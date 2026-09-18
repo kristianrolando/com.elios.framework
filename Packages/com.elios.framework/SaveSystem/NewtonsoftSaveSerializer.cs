@@ -3,13 +3,11 @@ using Newtonsoft.Json.Linq;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Newtonsoft (Json.NET) implementation of <see cref="ISaveSerializer"/>.
-    /// This is the only engine-level file that references the JSON library directly;
-    /// swapping serialisation backends means providing a different implementation here.
-    /// Tokens are stored as <see cref="JToken"/> so values remain human-readable and nested
-    /// inline in the save file.
-    /// </summary>
+    // Newtonsoft (Json.NET) implementation of ISaveSerializer.
+    // This is the only engine-level file that references the JSON library directly;
+    // swapping serialisation backends means providing a different implementation here.
+    // Tokens are stored as JToken so values remain human-readable and nested
+    // inline in the save file.
     public sealed class NewtonsoftSaveSerializer : ISaveSerializer
     {
         private readonly JsonSerializerSettings _settings;

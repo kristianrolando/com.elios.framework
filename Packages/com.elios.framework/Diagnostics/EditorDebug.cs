@@ -6,35 +6,31 @@ using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
-/// <summary>
-/// Editor-only debug utility for logging and drawing gizmos.
-/// 
-/// This class is safe to call from runtime scripts because every public debug method
-/// uses [Conditional("UNITY_EDITOR")]. Calls to these methods are removed from builds.
-/// 
-/// Do not place this file inside an "Editor" folder if you want to call it directly
-/// from normal MonoBehaviour scripts.
-/// 
-/// Example usage:
-/// 
-/// private void Start()
-/// {
-///     EditorDebug.Info("Game initialized", this);
-///     EditorDebug.Value("Health", currentHealth);
-/// }
-/// 
-/// private void OnDrawGizmos()
-/// {
-///     EditorDebug.DrawWireSphere(transform.position, 2f, EditorDebug.DebugColor.Cyan);
-///     EditorDebug.DrawArrowRay(transform.position, transform.forward * 3f, EditorDebug.DebugColor.Green);
-///     EditorDebug.DrawNameLabel(transform, Vector3.up * 1.5f);
-/// }
-/// </summary>
+// Editor-only debug utility for logging and drawing gizmos.
+//
+// This class is safe to call from runtime scripts because every public debug method
+// uses [Conditional("UNITY_EDITOR")]. Calls to these methods are removed from builds.
+//
+// Do not place this file inside an "Editor" folder if you want to call it directly
+// from normal MonoBehaviour scripts.
+//
+// Example usage:
+//
+// private void Start()
+// {
+//     EditorDebug.Info("Game initialized", this);
+//     EditorDebug.Value("Health", currentHealth);
+// }
+//
+// private void OnDrawGizmos()
+// {
+//     EditorDebug.DrawWireSphere(transform.position, 2f, EditorDebug.DebugColor.Cyan);
+//     EditorDebug.DrawArrowRay(transform.position, transform.forward * 3f, EditorDebug.DebugColor.Green);
+//     EditorDebug.DrawNameLabel(transform, Vector3.up * 1.5f);
+// }
 public static class EditorDebug
 {
-    /// <summary>
-    /// Simple reusable color presets for logs, Debug.DrawLine, and Gizmos.
-    /// </summary>
+    // Simple reusable color presets for logs, Debug.DrawLine, and Gizmos.
     public enum DebugColor
     {
         Default,
@@ -55,83 +51,65 @@ public static class EditorDebug
     // Logging
     // ══════════════════════════════════════════════
 
-    /// <summary>
-    /// Logs a normal editor-only message.
-    /// </summary>
+    // Logs a normal editor-only message.
     [Conditional("UNITY_EDITOR")]
     public static void Log(object message, Object context = null)
     {
         WriteLog(LogType.Log, message, DebugColor.Default, null, context);
     }
 
-    /// <summary>
-    /// Logs a colored editor-only message.
-    /// </summary>
+    // Logs a colored editor-only message.
     [Conditional("UNITY_EDITOR")]
     public static void Log(object message, DebugColor color, Object context = null)
     {
         WriteLog(LogType.Log, message, color, null, context);
     }
 
-    /// <summary>
-    /// Logs a colored editor-only message with a custom tag.
-    /// Example: EditorDebug.Log("PLAYER", "Jumped", EditorDebug.DebugColor.Green);
-    /// </summary>
+    // Logs a colored editor-only message with a custom tag.
+    // Example: EditorDebug.Log("PLAYER", "Jumped", EditorDebug.DebugColor.Green);
     [Conditional("UNITY_EDITOR")]
     public static void Log(string tag, object message, DebugColor color = DebugColor.Default, Object context = null)
     {
         WriteLog(LogType.Log, message, color, tag, context);
     }
 
-    /// <summary>
-    /// Logs an informational message using a cyan INFO tag.
-    /// </summary>
+    // Logs an informational message using a cyan INFO tag.
     [Conditional("UNITY_EDITOR")]
     public static void Info(object message, Object context = null)
     {
         WriteLog(LogType.Log, message, DebugColor.Cyan, "INFO", context);
     }
 
-    /// <summary>
-    /// Logs a success message using a green SUCCESS tag.
-    /// </summary>
+    // Logs a success message using a green SUCCESS tag.
     [Conditional("UNITY_EDITOR")]
     public static void Success(object message, Object context = null)
     {
         WriteLog(LogType.Log, message, DebugColor.Green, "SUCCESS", context);
     }
 
-    /// <summary>
-    /// Logs a warning message using Unity's warning log type.
-    /// </summary>
+    // Logs a warning message using Unity's warning log type.
     [Conditional("UNITY_EDITOR")]
     public static void Warning(object message, Object context = null)
     {
         WriteLog(LogType.Warning, message, DebugColor.Yellow, "WARNING", context);
     }
 
-    /// <summary>
-    /// Logs an error message using Unity's error log type.
-    /// </summary>
+    // Logs an error message using Unity's error log type.
     [Conditional("UNITY_EDITOR")]
     public static void Error(object message, Object context = null)
     {
         WriteLog(LogType.Error, message, DebugColor.Red, "ERROR", context);
     }
 
-    /// <summary>
-    /// Logs a named value, useful for quickly inspecting variables.
-    /// Example: EditorDebug.Value("Current HP", currentHp);
-    /// </summary>
+    // Logs a named value, useful for quickly inspecting variables.
+    // Example: EditorDebug.Value("Current HP", currentHp);
     [Conditional("UNITY_EDITOR")]
     public static void Value(string name, object value, DebugColor color = DebugColor.Purple, Object context = null)
     {
         WriteLog(LogType.Log, $"{name}: {value}", color, "VALUE", context);
     }
 
-    /// <summary>
-    /// Prints a visual separator in the Console to make debug output easier to scan.
-    /// </summary>
+    // Prints a visual separator in the Console to make debug output easier to scan.
     [Conditional("UNITY_EDITOR")]
     public static void Separator(string title = null, DebugColor color = DebugColor.Gray)
     {
@@ -149,10 +127,8 @@ public static class EditorDebug
     // They are useful from Update, FixedUpdate, or temporary runtime debugging.
     // Unlike Gizmos, they do not require OnDrawGizmos.
 
-    /// <summary>
-    /// Draws a temporary editor-only debug line in the Scene view.
-    /// Useful for raycast checks, movement direction, or aiming lines.
-    /// </summary>
+    // Draws a temporary editor-only debug line in the Scene view.
+    // Useful for raycast checks, movement direction, or aiming lines.
     [Conditional("UNITY_EDITOR")]
     public static void DrawDebugLine(
         Vector3 start,
@@ -164,10 +140,8 @@ public static class EditorDebug
         Debug.DrawLine(start, end, ToUnityColor(color), duration, depthTest);
     }
 
-    /// <summary>
-    /// Draws a temporary editor-only debug ray in the Scene view.
-    /// Direction includes both direction and length.
-    /// </summary>
+    // Draws a temporary editor-only debug ray in the Scene view.
+    // Direction includes both direction and length.
     [Conditional("UNITY_EDITOR")]
     public static void DrawDebugRay(
         Vector3 start,
@@ -185,9 +159,7 @@ public static class EditorDebug
     // Call these from OnDrawGizmos or OnDrawGizmosSelected.
     // They are ideal for persistent editor visualization.
 
-    /// <summary>
-    /// Draws a gizmo line between two world positions.
-    /// </summary>
+    // Draws a gizmo line between two world positions.
     [Conditional("UNITY_EDITOR")]
     public static void DrawLine(Vector3 start, Vector3 end, DebugColor color = DebugColor.White)
     {
@@ -197,19 +169,15 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws a gizmo ray from a start position using direction as offset.
-    /// </summary>
+    // Draws a gizmo ray from a start position using direction as offset.
     [Conditional("UNITY_EDITOR")]
     public static void DrawRay(Vector3 start, Vector3 direction, DebugColor color = DebugColor.White)
     {
         DrawLine(start, start + direction, color);
     }
 
-    /// <summary>
-    /// Draws a small filled sphere as a point marker.
-    /// Useful for target positions, hit points, and waypoints.
-    /// </summary>
+    // Draws a small filled sphere as a point marker.
+    // Useful for target positions, hit points, and waypoints.
     [Conditional("UNITY_EDITOR")]
     public static void DrawPoint(Vector3 position, float size = 0.1f, DebugColor color = DebugColor.Yellow)
     {
@@ -219,10 +187,8 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws a filled sphere.
-    /// Useful for visualizing detection areas or overlap checks.
-    /// </summary>
+    // Draws a filled sphere.
+    // Useful for visualizing detection areas or overlap checks.
     [Conditional("UNITY_EDITOR")]
     public static void DrawSphere(Vector3 center, float radius, DebugColor color = DebugColor.Cyan)
     {
@@ -232,10 +198,8 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws a wire sphere.
-    /// Better than filled sphere when you do not want to block scene visibility.
-    /// </summary>
+    // Draws a wire sphere.
+    // Better than filled sphere when you do not want to block scene visibility.
     [Conditional("UNITY_EDITOR")]
     public static void DrawWireSphere(Vector3 center, float radius, DebugColor color = DebugColor.Cyan)
     {
@@ -245,9 +209,7 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws a filled cube using world position and world size.
-    /// </summary>
+    // Draws a filled cube using world position and world size.
     [Conditional("UNITY_EDITOR")]
     public static void DrawCube(Vector3 center, Vector3 size, DebugColor color = DebugColor.Cyan)
     {
@@ -257,10 +219,8 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws a wire cube using world position and world size.
-    /// Useful for trigger zones, bounds, and area visualization.
-    /// </summary>
+    // Draws a wire cube using world position and world size.
+    // Useful for trigger zones, bounds, and area visualization.
     [Conditional("UNITY_EDITOR")]
     public static void DrawWireCube(Vector3 center, Vector3 size, DebugColor color = DebugColor.Cyan)
     {
@@ -270,9 +230,7 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws Unity Bounds as a wire cube.
-    /// </summary>
+    // Draws Unity Bounds as a wire cube.
     [Conditional("UNITY_EDITOR")]
     public static void DrawBounds(Bounds bounds, DebugColor color = DebugColor.Green)
     {
@@ -283,10 +241,8 @@ public static class EditorDebug
     // Gizmos - Rotated Shapes
     // ══════════════════════════════════════════════
 
-    /// <summary>
-    /// Draws a filled rotated box.
-    /// Useful for visualizing oriented hitboxes or custom box checks.
-    /// </summary>
+    // Draws a filled rotated box.
+    // Useful for visualizing oriented hitboxes or custom box checks.
     [Conditional("UNITY_EDITOR")]
     public static void DrawBox(
         Vector3 center,
@@ -301,10 +257,8 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws a wire rotated box.
-    /// Usually the better choice for hitbox and area debugging.
-    /// </summary>
+    // Draws a wire rotated box.
+    // Usually the better choice for hitbox and area debugging.
     [Conditional("UNITY_EDITOR")]
     public static void DrawWireBox(
         Vector3 center,
@@ -319,10 +273,8 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws a camera-like frustum.
-    /// Useful for vision cones, camera preview areas, or detection volumes.
-    /// </summary>
+    // Draws a camera-like frustum.
+    // Useful for vision cones, camera preview areas, or detection volumes.
     [Conditional("UNITY_EDITOR")]
     public static void DrawFrustum(
         Vector3 position,
@@ -344,10 +296,8 @@ public static class EditorDebug
     // Gizmos - Path / Lines
     // ══════════════════════════════════════════════
 
-    /// <summary>
-    /// Draws connected lines through a list of points.
-    /// Useful for waypoint routes, patrol paths, or movement previews.
-    /// </summary>
+    // Draws connected lines through a list of points.
+    // Useful for waypoint routes, patrol paths, or movement previews.
     [Conditional("UNITY_EDITOR")]
     public static void DrawPath(
         IReadOnlyList<Vector3> points,
@@ -371,10 +321,8 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws a path and marks every point with a small sphere.
-    /// More readable than DrawPath when debugging waypoint positions.
-    /// </summary>
+    // Draws a path and marks every point with a small sphere.
+    // More readable than DrawPath when debugging waypoint positions.
     [Conditional("UNITY_EDITOR")]
     public static void DrawPathWithPoints(
         IReadOnlyList<Vector3> points,
@@ -394,10 +342,8 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws a normalized direction arrow from a position.
-    /// Useful for forward direction, velocity direction, or target direction.
-    /// </summary>
+    // Draws a normalized direction arrow from a position.
+    // Useful for forward direction, velocity direction, or target direction.
     [Conditional("UNITY_EDITOR")]
     public static void DrawDirection(
         Vector3 position,
@@ -415,10 +361,8 @@ public static class EditorDebug
     // Gizmos - Circle / Arc
     // ══════════════════════════════════════════════
 
-    /// <summary>
-    /// Draws a horizontal circle using Vector3.up as the normal.
-    /// Good for radius checks on the XZ plane.
-    /// </summary>
+    // Draws a horizontal circle using Vector3.up as the normal.
+    // Good for radius checks on the XZ plane.
     [Conditional("UNITY_EDITOR")]
     public static void DrawCircle(
         Vector3 center,
@@ -429,10 +373,8 @@ public static class EditorDebug
         DrawCircle(center, Vector3.up, radius, color, segments);
     }
 
-    /// <summary>
-    /// Draws a circle on any plane using a custom normal.
-    /// Increase segments for smoother circles.
-    /// </summary>
+    // Draws a circle on any plane using a custom normal.
+    // Increase segments for smoother circles.
     [Conditional("UNITY_EDITOR")]
     public static void DrawCircle(
         Vector3 center,
@@ -475,10 +417,8 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws an arc around a center point.
-    /// Useful for angle limits, attack ranges, vision ranges, or rotation previews.
-    /// </summary>
+    // Draws an arc around a center point.
+    // Useful for angle limits, attack ranges, vision ranges, or rotation previews.
     [Conditional("UNITY_EDITOR")]
     public static void DrawArc(
         Vector3 center,
@@ -515,10 +455,8 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Draws a simple cone shape on the XZ plane.
-    /// Useful for enemy field of view, attack cone, or detection angle.
-    /// </summary>
+    // Draws a simple cone shape on the XZ plane.
+    // Useful for enemy field of view, attack cone, or detection angle.
     [Conditional("UNITY_EDITOR")]
     public static void DrawConeArc(
         Vector3 origin,
@@ -553,10 +491,8 @@ public static class EditorDebug
     // Gizmos - Arrow
     // ══════════════════════════════════════════════
 
-    /// <summary>
-    /// Draws an arrow from start to end.
-    /// Useful for direction, velocity, force, and target debugging.
-    /// </summary>
+    // Draws an arrow from start to end.
+    // Useful for direction, velocity, force, and target debugging.
     [Conditional("UNITY_EDITOR")]
     public static void DrawArrow(
         Vector3 start,
@@ -586,10 +522,8 @@ public static class EditorDebug
         DrawLine(end, end + left * headLength, color);
     }
 
-    /// <summary>
-    /// Draws an arrow using start position and direction offset.
-    /// Direction includes both direction and length.
-    /// </summary>
+    // Draws an arrow using start position and direction offset.
+    // Direction includes both direction and length.
     [Conditional("UNITY_EDITOR")]
     public static void DrawArrowRay(
         Vector3 start,
@@ -605,11 +539,9 @@ public static class EditorDebug
     // Gizmos - Transform Helpers
     // ══════════════════════════════════════════════
 
-    /// <summary>
-    /// Draws local transform axes:
-    /// Red = Right, Green = Up, Blue = Forward.
-    /// Useful for checking object orientation.
-    /// </summary>
+    // Draws local transform axes:
+    // Red = Right, Green = Up, Blue = Forward.
+    // Useful for checking object orientation.
     [Conditional("UNITY_EDITOR")]
     public static void DrawTransformAxes(Transform target, float length = 1f)
     {
@@ -623,10 +555,8 @@ public static class EditorDebug
         DrawArrow(position, position + target.forward * length, DebugColor.Blue);
     }
 
-    /// <summary>
-    /// Draws a local-space box using a Transform as reference.
-    /// Useful for custom local hitboxes or detection zones.
-    /// </summary>
+    // Draws a local-space box using a Transform as reference.
+    // Useful for custom local hitboxes or detection zones.
     [Conditional("UNITY_EDITOR")]
     public static void DrawLocalBounds(
         Transform target,
@@ -646,10 +576,8 @@ public static class EditorDebug
             color);
     }
 
-    /// <summary>
-    /// Draws a label using the target Transform's name.
-    /// Useful for identifying objects in crowded Scene views.
-    /// </summary>
+    // Draws a label using the target Transform's name.
+    // Useful for identifying objects in crowded Scene views.
     [Conditional("UNITY_EDITOR")]
     public static void DrawNameLabel(
         Transform target,
@@ -674,10 +602,8 @@ public static class EditorDebug
     // The UnityEditor reference is wrapped in #if UNITY_EDITOR,
     // so it will not break builds.
 
-    /// <summary>
-    /// Draws a text label in the Scene view.
-    /// Useful for displaying object names, state values, or short debug notes.
-    /// </summary>
+    // Draws a text label in the Scene view.
+    // Useful for displaying object names, state values, or short debug notes.
     [Conditional("UNITY_EDITOR")]
     public static void DrawLabel(
         Vector3 position,
@@ -700,9 +626,7 @@ public static class EditorDebug
     // Internal Helpers
     // ══════════════════════════════════════════════
 
-    /// <summary>
-    /// Centralized log writer so all log methods share the same formatting behavior.
-    /// </summary>
+    // Centralized log writer so all log methods share the same formatting behavior.
     private static void WriteLog(
         LogType logType,
         object message,
@@ -736,9 +660,7 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Wraps console text with Unity rich-text color tags.
-    /// </summary>
+    // Wraps console text with Unity rich-text color tags.
     private static string ApplyRichTextColor(string text, DebugColor color)
     {
         string hex = ToHexColor(color);
@@ -749,9 +671,7 @@ public static class EditorDebug
         return $"<color={hex}>{text}</color>";
     }
 
-    /// <summary>
-    /// Converts DebugColor into UnityEngine.Color for Gizmos and Debug.DrawLine.
-    /// </summary>
+    // Converts DebugColor into UnityEngine.Color for Gizmos and Debug.DrawLine.
     public static UnityEngine.Color ToUnityColor(DebugColor color)
     {
         return color switch
@@ -771,9 +691,7 @@ public static class EditorDebug
         };
     }
 
-    /// <summary>
-    /// Converts DebugColor into hex string for Unity Console rich text.
-    /// </summary>
+    // Converts DebugColor into hex string for Unity Console rich text.
     private static string ToHexColor(DebugColor color)
     {
         return color switch
@@ -793,10 +711,8 @@ public static class EditorDebug
         };
     }
 
-    /// <summary>
-    /// Returns a normalized vector, or a fallback when the input is zero.
-    /// Prevents broken gizmo drawing caused by invalid directions.
-    /// </summary>
+    // Returns a normalized vector, or a fallback when the input is zero.
+    // Prevents broken gizmo drawing caused by invalid directions.
     private static Vector3 SafeNormal(Vector3 value, Vector3 fallback)
     {
         return value.sqrMagnitude <= Mathf.Epsilon
@@ -805,10 +721,8 @@ public static class EditorDebug
     }
 
 #if UNITY_EDITOR
-    /// <summary>
-    /// Creates a simple Scene view label style.
-    /// Editor-only because it depends on UnityEditor.
-    /// </summary>
+    // Creates a simple Scene view label style.
+    // Editor-only because it depends on UnityEditor.
     private static GUIStyle CreateLabelStyle(UnityEngine.Color color, int fontSize)
     {
         GUIStyle style = new GUIStyle(UnityEditor.EditorStyles.boldLabel)
@@ -821,10 +735,8 @@ public static class EditorDebug
     }
 #endif
 
-    /// <summary>
-    /// Temporarily changes Gizmos.color, then restores the previous color automatically.
-    /// This prevents one gizmo draw call from affecting the next one.
-    /// </summary>
+    // Temporarily changes Gizmos.color, then restores the previous color automatically.
+    // This prevents one gizmo draw call from affecting the next one.
     private readonly struct GizmoColorScope : IDisposable
     {
         private readonly UnityEngine.Color previousColor;
@@ -841,10 +753,8 @@ public static class EditorDebug
         }
     }
 
-    /// <summary>
-    /// Temporarily changes Gizmos.matrix, then restores the previous matrix automatically.
-    /// This is needed for rotated gizmo shapes.
-    /// </summary>
+    // Temporarily changes Gizmos.matrix, then restores the previous matrix automatically.
+    // This is needed for rotated gizmo shapes.
     private readonly struct GizmoMatrixScope : IDisposable
     {
         private readonly Matrix4x4 previousMatrix;

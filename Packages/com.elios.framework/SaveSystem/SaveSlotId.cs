@@ -3,9 +3,7 @@ using System.Text;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// File-system safe slot identifier.
-    /// </summary>
+    // File-system safe slot identifier.
     public readonly struct SaveSlotId : IEquatable<SaveSlotId>
     {
         public string Value { get; }

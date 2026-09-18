@@ -2,11 +2,9 @@ using System.Runtime.InteropServices;
 
 namespace Game.Framework.SaveSystem
 {
-    /// <summary>
-    /// Bridges to platform-specific file-system persistence. On WebGL, writes to
-    /// persistentDataPath only reach the browser's IndexedDB after an explicit FS.syncfs, so the
-    /// storage layer calls <see cref="PersistToDisk"/> after each write/delete. No-op elsewhere.
-    /// </summary>
+    // Bridges to platform-specific file-system persistence. On WebGL, writes to
+    // persistentDataPath only reach the browser's IndexedDB after an explicit FS.syncfs, so the
+    // storage layer calls PersistToDisk after each write/delete. No-op elsewhere.
     internal static class SaveFileSystem
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -21,7 +19,7 @@ namespace Game.Framework.SaveSystem
             false;
 #endif
 
-        /// <summary>Flushes pending file writes to durable storage. Only does work on WebGL.</summary>
+        // Flushes pending file writes to durable storage. Only does work on WebGL.
         internal static void PersistToDisk()
         {
 #if UNITY_WEBGL && !UNITY_EDITOR

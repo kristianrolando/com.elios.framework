@@ -1,15 +1,13 @@
 namespace Game.Framework.ObjectPooling
 {
-    /// <summary>
-    /// Implement on any component of a pooled prefab (root or children) to reset
-    /// or initialize state as the instance is spawned from and returned to the pool.
-    /// </summary>
+    // Implement on any component of a pooled prefab (root or children) to reset
+    // or initialize state as the instance is spawned from and returned to the pool.
     public interface IPoolable
     {
-        /// <summary>Called right after the instance is activated for reuse.</summary>
+        // Called right after the instance is activated for reuse.
         void OnSpawn();
 
-        /// <summary>Called right before the instance is deactivated and pooled.</summary>
+        // Called right before the instance is deactivated and pooled.
         void OnReturnToPool();
     }
 }
