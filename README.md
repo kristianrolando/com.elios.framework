@@ -38,10 +38,11 @@ secrets (*Settings → Secrets and variables → Actions*):
 | `UNITY_EMAIL` | Unity ID email |
 | `UNITY_PASSWORD` | Unity ID password |
 
-To obtain the `.ulf`, run the [activation workflow](https://game.ci/docs/github/activation) once
-(`game-ci/unity-request-activation-file`), upload the resulting `.alf` at
-[license.unity3d.com/manual](https://license.unity3d.com/manual), and paste the downloaded `.ulf`
-into `UNITY_LICENSE`. Until the secrets exist the job fails at the activation step.
+To obtain the `.ulf`: run the manual-only **Acquire activation file** workflow
+(`.github/workflows/activation.yml`) from the Actions tab, download its `.alf` artifact, upload
+that at [license.unity3d.com/manual](https://license.unity3d.com/manual) choosing *Personal*, and
+paste the downloaded `.ulf` into `UNITY_LICENSE`. Each Unity version needs its own `.ulf`, so
+repeat this when `unityVersion` changes. Until the secrets exist the test job fails at activation.
 
 ## License
 
