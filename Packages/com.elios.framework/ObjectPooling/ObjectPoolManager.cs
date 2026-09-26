@@ -97,14 +97,14 @@ namespace Elios.Framework.ObjectPooling
             if (!instance.TryGetComponent(out PoolableKey key))
             {
                 // Not a pooled object → destroy.
-                Object.Destroy(instance);
+                ObjectPool.DestroyInstance(instance);
                 return;
             }
 
             if (_pools.TryGetValue(key.PoolKey, out ObjectPool pool))
                 pool.Return(instance);
             else
-                Object.Destroy(instance); // Pool no longer exists (e.g., cleared) → destroy.
+                ObjectPool.DestroyInstance(instance); // Pool no longer exists (e.g., cleared) → destroy.
         }
 
         public static bool HasPool(GameObject prefab)

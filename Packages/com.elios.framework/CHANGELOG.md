@@ -9,6 +9,17 @@ Every entry starts with the module it touches, so "what changed in Save?" is a s
 `[EventBus]`, `[Diagnostics]`, `[Package]` (package-wide: metadata, docs, every module at
 once) and `[Repo]` (the host project around the package).
 
+## [2.0.1] - 2026-09-26
+
+### Fixed
+- `[ObjectPooling]` Every destroy path in `ObjectPool.Return`, `ObjectPool.Clear` and
+  `ObjectPoolManager.Return` now deactivates the instance before destroying it. Destroying a
+  still-active GameObject makes Unity tear the hierarchy down child first, so a component whose
+  `OnDisable` reaches for a sibling can find it already destroyed — a Feel `MMF_Player` restoring
+  its scale target threw `MissingReferenceException` this way, on scene-authored objects handed to
+  `Return` without ever coming from a pool. The pooled path already deactivated first; the destroy
+  paths now match it. No API change.
+
 ## [2.0.0] - 2026-09-18
 
 ### Changed

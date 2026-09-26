@@ -301,6 +301,57 @@ namespace Elios.Framework.ObjectPooling
         }
 
         // ══════════════════════════════════════════════
+        // Deactivation Before Destroy
+        // ══════════════════════════════════════════════
+        //
+        // Every destroy path has to deactivate first, so each OnDisable runs while the hierarchy is
+        // still whole. Outside Play Mode Object.Destroy does nothing, which is what makes the
+        // instance still readable here.
+
+        [Test]
+        public void Return_AnObjectThatWasNeverPooled_DeactivatesItBeforeDestroying()
+        {
+            LogAssert.ignoreFailingMessages = true;
+
+            ObjectPool pool = CreatePool();
+            var loose = new GameObject("NotPooled");
+            loose.transform.SetParent(_root, false);
+
+            pool.Return(loose);
+
+            Assert.IsFalse(loose.activeSelf, "the instance was destroyed while still active");
+        }
+
+        [Test]
+        public void Return_AnInstanceBelongingToAnotherPool_DeactivatesItBeforeDestroying()
+        {
+            LogAssert.ignoreFailingMessages = true;
+
+            ObjectPool owner = CreatePool();
+            var stranger = new ObjectPool(_otherPrefab, 0, UnlimitedReserve, _root);
+            GameObject instance = owner.Get(Vector3.zero, Quaternion.identity);
+
+            stranger.Return(instance);
+
+            Assert.IsFalse(instance.activeSelf, "the instance was destroyed while still active");
+        }
+
+        [Test]
+        public void Return_WhenTheReserveIsFull_DeactivatesTheSurplusBeforeDestroying()
+        {
+            LogAssert.ignoreFailingMessages = true;
+
+            var pool = new ObjectPool(_prefab, initialSize: 0, maxSize: 1, rootParent: _root);
+            GameObject first = pool.Get(Vector3.zero, Quaternion.identity);
+            GameObject surplus = pool.Get(Vector3.zero, Quaternion.identity);
+
+            pool.Return(first);
+            pool.Return(surplus);
+
+            Assert.IsFalse(surplus.activeSelf, "the surplus instance was destroyed while still active");
+        }
+
+        // ══════════════════════════════════════════════
         // Poolable Callbacks
         // ══════════════════════════════════════════════
 

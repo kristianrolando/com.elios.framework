@@ -202,6 +202,43 @@ namespace Elios.Framework.ObjectPooling
         }
 
         // ══════════════════════════════════════════════
+        // Deactivation Before Destroy
+        // ══════════════════════════════════════════════
+        //
+        // A scene-authored object handed to Return, and a pooled one whose pool is already gone,
+        // both end in Destroy. Both have to be deactivated first, or a component's OnDisable can
+        // reach a sibling Unity has already torn down.
+
+        [Test]
+        public void Return_AnObjectThatWasNeverPooled_DeactivatesItBeforeDestroying()
+        {
+            LogAssert.ignoreFailingMessages = true;
+
+            var loose = new GameObject("NotPooled");
+
+            ObjectPoolManager.Return(loose);
+
+            Assert.IsFalse(loose.activeSelf, "the instance was destroyed while still active");
+
+            DestroyIfAlive(loose);
+        }
+
+        [Test]
+        public void Return_AfterItsPoolWasCleared_DeactivatesTheInstanceBeforeDestroying()
+        {
+            LogAssert.ignoreFailingMessages = true;
+
+            GameObject instance = ObjectPoolManager.Get(_prefab, Vector3.zero);
+            ObjectPoolManager.ClearAll();
+
+            ObjectPoolManager.Return(instance);
+
+            Assert.IsFalse(instance.activeSelf, "the instance was destroyed while still active");
+
+            DestroyIfAlive(instance);
+        }
+
+        // ══════════════════════════════════════════════
         // Default Reserve Cap
         // ══════════════════════════════════════════════
 

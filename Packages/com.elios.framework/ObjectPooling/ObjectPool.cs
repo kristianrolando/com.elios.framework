@@ -68,14 +68,14 @@ namespace Elios.Framework.ObjectPooling
             if (!instance.TryGetComponent(out PoolableKey key))
             {
                 // Not a pooled object → just destroy.
-                Object.Destroy(instance);
+                DestroyInstance(instance);
                 return;
             }
 
             // Wrong pool → destroy (likely returned via the wrong manager/pool).
             if (key.PoolKey != PoolKey)
             {
-                Object.Destroy(instance);
+                DestroyInstance(instance);
                 return;
             }
 
@@ -98,7 +98,7 @@ namespace Elios.Framework.ObjectPooling
             else
             {
                 // Reserve is full → discard the surplus instance.
-                Object.Destroy(instance);
+                DestroyInstance(instance);
             }
         }
 
@@ -108,13 +108,26 @@ namespace Elios.Framework.ObjectPooling
             {
                 GameObject inst = _pool.Dequeue();
                 if (inst != null)
-                    Object.Destroy(inst);
+                    DestroyInstance(inst);
             }
         }
 
         // ══════════════════════════════════════════════
         // Internal Helpers
         // ══════════════════════════════════════════════
+
+        // Destroying an instance while it is still active tears the hierarchy down child first, so a
+        // component whose OnDisable reaches for a sibling can find it already destroyed. Deactivating
+        // first runs every OnDisable while the hierarchy is still whole, exactly like the pooled path.
+        // Shared with ObjectPoolManager so every destroy of a pooled instance goes through one place.
+        internal static void DestroyInstance(GameObject instance)
+        {
+            if (instance == null)
+                return;
+
+            instance.SetActive(false);
+            Object.Destroy(instance);
+        }
 
         private void Prewarm(int initialSize)
         {
